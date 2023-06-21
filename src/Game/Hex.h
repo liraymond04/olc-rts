@@ -72,9 +72,6 @@ template <class T> class HexMap {
         }
     }
 
-    /* TODO:
-     - guard against out of range (some neighbours missing)
-     */
     inline T &at(int q, int r) {
         int j = r - top_;
         int i = q - left_ + (r >> 1);
