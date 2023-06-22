@@ -100,7 +100,8 @@ class HexGrid {
     int width, height;
     double _size;
 
-    HexMap<int> _heights{ 0, 0, 5, 5, 10, -1 };
+    HexMap<int> _heights{ 0, 0, 4, 4, 10, -1 };
+    HexMap<int> _weights{ 0, 0, 4, 4, 1, -1 };
 
     double scale = 1.0;
     double rotation_deg = 10.0;
@@ -111,7 +112,7 @@ class HexGrid {
     double translate_x = 0.0f;
     double translate_y = 0.0f;
 
-    Hex *start, *end;
+    Hex *start = nullptr, *end = nullptr;
     std::unordered_set<Hex> path;
 
     HexGrid(Holo::RTS *game, int width, int height, double _size) {

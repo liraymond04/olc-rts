@@ -59,10 +59,18 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     }
     hexGrid->DrawHex(q, r, hexGrid->_size, olc::RED, olc::NONE, height);
     if (GetMouse(0).bPressed) {
-        hexGrid->_heights.at(q, r)++;
+        hexGrid->_heights.at(q, r) += 5;
+        hexGrid->_weights.at(q, r) += 1;
+        if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
+            hexGrid->A_Star();
+        }
     }
     if (GetMouse(1).bPressed) {
-        hexGrid->_heights.at(q, r)--;
+        hexGrid->_heights.at(q, r) -= 5;
+        hexGrid->_weights.at(q, r) -= 1;
+        if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
+            hexGrid->A_Star();
+        }
     }
     if (GetKey(olc::Q).bPressed) {
         hexGrid->start = new Hex(q, r);

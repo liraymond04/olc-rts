@@ -244,7 +244,8 @@ void HexGrid::A_Star() {
         for (int i = 0; i < 6; i++) {
             Hex neighbor = current.u.neighbor(i);
             if (_heights.at(neighbor.q, neighbor.r) != -1) {
-                int new_cost = cost_so_far[current.u] + 1;
+                int new_cost = cost_so_far[current.u] +
+                               _weights.at(neighbor.q, neighbor.r);
                 if (cost_so_far.find(neighbor) == cost_so_far.end() ||
                     new_cost < cost_so_far[neighbor]) {
                     cost_so_far[neighbor] = new_cost;
