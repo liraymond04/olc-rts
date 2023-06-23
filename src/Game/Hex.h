@@ -9,8 +9,6 @@
 #include <unordered_map>
 #include <queue>
 
-using namespace std;
-
 #include "RTS.h"
 
 struct Hex {
@@ -54,7 +52,7 @@ struct FractionalHex {
 };
 
 template <class T> class HexMap {
-    vector<vector<T>> map;
+    std::vector<std::vector<T>> map;
 
     int left_, top_;
     T null_val;
@@ -67,7 +65,7 @@ template <class T> class HexMap {
         map.resize(height);
         for (int r = 0; r < height; r++) {
             int width = right - left + 1;
-            vector<T> row(width, init_val);
+            std::vector<T> row(width, init_val);
             map[r] = row;
         }
     }
