@@ -20,6 +20,9 @@ struct Hex {
     friend bool operator==(const Hex &lhs, const Hex &rhs) {
         return lhs.q == rhs.q && lhs.r == rhs.r;
     }
+    friend bool operator!=(const Hex &lhs, const Hex &rhs) {
+        return !(lhs == rhs);
+    }
 
     Hex operator+(Hex const &a) { return Hex(q + a.q, r + a.r); }
     Hex operator-(Hex const &a) { return Hex(q - a.q, r - a.r); }
@@ -90,6 +93,8 @@ struct dNode {
     }
 };
 
+class Unit;
+
 class HexGrid {
   private:
     Holo::RTS *game;
@@ -100,6 +105,9 @@ class HexGrid {
 
     HexMap<int> _heights{ 0, 0, 4, 4, 10, -1 };
     HexMap<int> _weights{ 0, 0, 4, 4, 1, -1 };
+    HexMap<Unit *> units{ 0, 0, 4, 4, nullptr, nullptr };
+
+    std::vector<Unit> _units;
 
     double scale = 1.0;
     double rotation_deg = 10.0;
@@ -127,10 +135,6 @@ class HexGrid {
 
     void A_Star();
 
-    void CalculateIsometricAxialCoordinates(double centerX, double centerY,
-                                            double size, double &q, double &r);
-
-  private:
     void ConvertToIsometric(double &x, double &y);
     void ConvertToCartesian(double &x, double &y);
     void CalculateIsometricHexagonVertices(double centerX, double centerY,
@@ -141,6 +145,8 @@ class HexGrid {
                                 double &centerY);
     void CalculateAxialCoordinates(double centerX, double centerY, double size,
                                    double &q, double &r);
+    void CalculateIsometricAxialCoordinates(double centerX, double centerY,
+                                            double size, double &q, double &r);
 };
 
 #endif // !HEX_H

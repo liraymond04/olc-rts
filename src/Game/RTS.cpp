@@ -1,5 +1,6 @@
 #include "RTS.h"
 #include "Hex.h"
+#include "Unit.h"
 
 bool Holo::RTS::OnUserCreate() {
     guiSlider1 = new olc::QuickGUI::Slider(guiManager, { 30.0f, 10.0f },
@@ -16,6 +17,8 @@ bool Holo::RTS::OnUserCreate() {
                                            { 246.0f, 110.0f }, 0, 1, 0.5f);
 
     hexGrid = new HexGrid(this, 5, 5, 30);
+    hexGrid->_units.push_back(Unit(hexGrid, Hex(0, 0), 14, "Unit 1"));
+    hexGrid->units.at(0, 0) = &hexGrid->_units[0];
 
     return true;
 }
@@ -40,6 +43,8 @@ void EndPan(const olc::vi2d &vPos) {
     m_bPanning = false;
 }
 
+Hex *selected = nullptr;
+
 bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     guiManager.Update(this);
 
@@ -58,14 +63,14 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         height = hexGrid->_heights.at(q, r);
     }
     hexGrid->DrawHex(q, r, hexGrid->_size, olc::RED, olc::NONE, height);
-    if (GetMouse(0).bPressed) {
+    if (GetKey(olc::Z).bPressed) {
         hexGrid->_heights.at(q, r) += 5;
         hexGrid->_weights.at(q, r) += 1;
         if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
             hexGrid->A_Star();
         }
     }
-    if (GetMouse(1).bPressed) {
+    if (GetKey(olc::C).bPressed) {
         hexGrid->_heights.at(q, r) -= 5;
         hexGrid->_weights.at(q, r) -= 1;
         if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
@@ -73,16 +78,69 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         }
     }
     if (GetKey(olc::Q).bPressed) {
-        hexGrid->start = new Hex(q, r);
+        if (hexGrid->_weights.at(q, r) != -1) {
+            delete (hexGrid->start);
+            hexGrid->start = new Hex(q, r);
+        } else {
+            delete (hexGrid->start);
+            hexGrid->start = nullptr;
+            hexGrid->path.clear();
+        }
         if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
             hexGrid->A_Star();
         }
     }
     if (GetKey(olc::E).bPressed) {
-        hexGrid->end = new Hex(q, r);
+        if (hexGrid->_weights.at(q, r) != -1) {
+            delete (hexGrid->end);
+            hexGrid->end = new Hex(q, r);
+        } else {
+            delete (hexGrid->end);
+            hexGrid->end = nullptr;
+            hexGrid->path.clear();
+        }
         if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
             hexGrid->A_Star();
         }
+    }
+
+    if (GetMouse(0).bPressed) {
+        if (hexGrid->_weights.at(q, r) != -1 &&
+            (selected == nullptr ||
+             selected != nullptr && Hex(q, r) != *selected)) {
+            delete (selected);
+            selected = new Hex(q, r);
+        } else {
+            delete (selected);
+            selected = nullptr;
+        }
+    }
+    if (selected != nullptr) {
+        height = 10;
+        if (selected->q < 5 && selected->q >= 0 && selected->r < 5 &&
+            selected->r >= 0) {
+            height = hexGrid->_heights.at(selected->q, selected->r);
+        }
+        hexGrid->DrawHex(selected->q, selected->r, hexGrid->_size, olc::YELLOW,
+                         olc::NONE, height);
+
+        Unit *selectedUnit = hexGrid->units.at(selected->q, selected->r);
+        if (selectedUnit != nullptr) {
+            DrawString({ 10, ScreenHeight() - 15 }, selectedUnit->name);
+        }
+
+        if (GetMouse(1).bPressed && hexGrid->_weights.at(q, r) != -1) {
+            // selectedUnit->moving = true;
+            hexGrid->units.at(selected->q, selected->r) = nullptr;
+            hexGrid->units.at(q, r) = selectedUnit;
+            selectedUnit->pos = Hex(q, r);
+            delete (selected);
+            selected = new Hex(q, r);
+        }
+    }
+
+    for (Unit &unit : hexGrid->_units) {
+        unit.Draw(this);
     }
 
     if (GetKey(olc::TAB).bPressed) {
@@ -101,12 +159,12 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     if (GetMouse(2).bReleased)
         EndPan(vMousePos);
 
-    // if (GetKey(olc::Q).bHeld) {
-    //     hexGrid->_size += 25.0f * fElapsedTime;
-    // }
-    // if (GetKey(olc::E).bHeld) {
-    //     hexGrid->_size -= 25.0f * fElapsedTime;
-    // }
+    if (GetKey(olc::A).bHeld) {
+        hexGrid->_size += 25.0f * fElapsedTime;
+    }
+    if (GetKey(olc::D).bHeld) {
+        hexGrid->_size -= 25.0f * fElapsedTime;
+    }
 
     return true;
 }

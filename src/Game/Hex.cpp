@@ -1,4 +1,5 @@
 #include "Hex.h"
+#include "Unit.h"
 
 std::vector<Hex> Hex::directions = { Hex(1, 0),  Hex(1, -1), Hex(0, -1),
                                      Hex(-1, 0), Hex(-1, 1), Hex(0, 1) },
@@ -251,6 +252,7 @@ void HexGrid::A_Star() {
                     cost_so_far[neighbor] = new_cost;
                     int priority = new_cost + hex_distance(*end, neighbor);
                     pq.push({ neighbor, priority });
+                    delete (came_from[neighbor]);
                     came_from[neighbor] = new Hex(current.u.q, current.u.r);
                 }
             }
