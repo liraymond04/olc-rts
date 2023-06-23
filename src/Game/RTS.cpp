@@ -129,7 +129,8 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             DrawString({ 10, ScreenHeight() - 15 }, selectedUnit->name);
         }
 
-        if (GetMouse(1).bPressed && hexGrid->_weights.at(q, r) != -1) {
+        if (selectedUnit != nullptr && GetMouse(1).bPressed &&
+            hexGrid->_weights.at(q, r) != -1) {
             // selectedUnit->moving = true;
             hexGrid->units.at(selected->q, selected->r) = nullptr;
             hexGrid->units.at(q, r) = selectedUnit;
