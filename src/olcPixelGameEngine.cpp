@@ -2,4 +2,4 @@
 #include "olcPixelGameEngine.h"
 
 #define OLC_PGEX_QUICKGUI
-#include "olcPGEX_QuickGUI.h"
+#include "extensions/olcPGEX_QuickGUI.h"

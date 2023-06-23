@@ -8,7 +8,7 @@
 using namespace std;
 
 #include "olcPixelGameEngine.h"
-#include "olcPGEX_QuickGUI.h"
+#include "extensions/olcPGEX_QuickGUI.h"
 
 class HexGrid;
 
