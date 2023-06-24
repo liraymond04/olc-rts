@@ -167,6 +167,7 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
                        outline);
     }
 
+    // Draw lines connecting bottom and top hexagons
     if (height > 0) {
         for (int i = 0; i < 6; i++) {
             game->DrawLine(verticesX[i], verticesY[i], verticesX[i],
@@ -174,6 +175,7 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
         }
     }
 
+    // Colour top face
     if (fill != olc::NONE) {
         game->FillTriangle(
             { (int)verticesX[0], (int)verticesY[0] - (int)height },
@@ -193,6 +195,7 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
             { (int)verticesX[5], (int)verticesY[5] - (int)height }, fill);
     }
 
+    // Draw top outline
     if (height > 0) {
         for (int i = 0; i < 6; i++) {
             int j = (i + 1) % 6; // Index of the next vertex with wrapping
