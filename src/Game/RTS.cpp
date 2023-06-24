@@ -20,6 +20,8 @@ bool Holo::RTS::OnUserCreate() {
     hexGrid->_units.push_back(Unit(hexGrid, Hex(0, 0), 14, "Unit 1"));
     hexGrid->units.at(0, 0) = &hexGrid->_units[0];
 
+    actions.push_back(new Counter(1.0f, -1));
+
     return true;
 }
 
@@ -45,8 +47,34 @@ void EndPan(const olc::vi2d &vPos) {
 
 Hex *selected = nullptr;
 
+void Holo::RTS::Tick() {
+    std::vector<IAction *>::iterator iter = std::begin(actions);
+    while (iter != std::end(actions)) {
+        (*iter)->Update(1.0f);
+        if ((*iter)->done) {
+            delete (*iter);
+            iter = actions.erase(iter);
+        } else {
+            iter++;
+        }
+    }
+}
+
 bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     guiManager.Update(this);
+
+    bool tick = true;
+    fAccumulatedTime += fElapsedTime;
+    float frameTime = fAccumulatedTime;
+    if (fAccumulatedTime > fTargetFrameTime) {
+        fAccumulatedTime -= fTargetFrameTime;
+    } else {
+        tick = false;
+    }
+    if (tick) {
+        // std::cout << 1 / frameTime << "\n";
+        Tick();
+    }
 
     Clear(olc::BLACK);
 
@@ -138,6 +166,10 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             delete (selected);
             selected = new Hex(q, r);
         }
+    }
+
+    if (GetKey(olc::G).bPressed) {
+        actions[0]->done = true;
     }
 
     for (Unit &unit : hexGrid->_units) {
