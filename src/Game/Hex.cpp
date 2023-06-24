@@ -208,23 +208,21 @@ void HexGrid::Draw() {
         for (int j = 0; j < width; j++) {
             int q = j - i / 2;
             olc::Pixel col = olc::DARK_GREEN;
-            if (path.find(Hex(q, r)) != path.end()) {
-                col = olc::YELLOW;
-            }
-            if (start != nullptr && start->q == q && start->r == r) {
-                col = olc::GREEN;
-            }
-            if (end != nullptr && end->q == q && end->r == r) {
-                col = olc::RED;
-            }
+            // if (path.find(Hex(q, r)) != path.end()) {
+            //     col = olc::YELLOW;
+            // }
+            // if (start != nullptr && start->q == q && start->r == r) {
+            //     col = olc::GREEN;
+            // }
+            // if (end != nullptr && end->q == q && end->r == r) {
+            //     col = olc::RED;
+            // }
             DrawHex(q, r, _size, olc::WHITE, col, _heights.at(q, r));
         }
     }
 }
 
-void HexGrid::A_Star() {
-    path.clear();
-
+void HexGrid::A_Star(std::vector<Hex> &path, Hex *start, Hex *end) {
     std::priority_queue<dNode> pq;
     pq.push({ *start, 0 });
 
@@ -261,7 +259,11 @@ void HexGrid::A_Star() {
 
     Hex *cur = end;
     while (cur != nullptr) {
-        path.insert(*cur);
+        path.push_back(*cur);
         cur = came_from[*cur];
     }
+    if (path.size() > 1) {
+        path.pop_back();
+    }
+    std::reverse(path.begin(), path.end());
 }

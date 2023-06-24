@@ -1,6 +1,7 @@
 #include "RTS.h"
 #include "Hex.h"
 #include "Unit.h"
+#include "IAction.h"
 
 bool Holo::RTS::OnUserCreate() {
     guiSlider1 = new olc::QuickGUI::Slider(guiManager, { 30.0f, 10.0f },
@@ -20,7 +21,7 @@ bool Holo::RTS::OnUserCreate() {
     hexGrid->_units.push_back(Unit(hexGrid, Hex(0, 0), 14, "Unit 1"));
     hexGrid->units.at(0, 0) = &hexGrid->_units[0];
 
-    actions.push_back(new Counter(1.0f, -1));
+    // actions.push_back(new Counter(1.0f, -1));
 
     return true;
 }
@@ -94,43 +95,43 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     if (GetKey(olc::Z).bPressed) {
         hexGrid->_heights.at(q, r) += 5;
         hexGrid->_weights.at(q, r) += 1;
-        if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
-            hexGrid->A_Star();
-        }
+        // if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
+        //     hexGrid->A_Star(path);
+        // }
     }
     if (GetKey(olc::C).bPressed) {
         hexGrid->_heights.at(q, r) -= 5;
         hexGrid->_weights.at(q, r) -= 1;
-        if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
-            hexGrid->A_Star();
-        }
+        // if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
+        //     hexGrid->A_Star(path);
+        // }
     }
-    if (GetKey(olc::Q).bPressed) {
-        if (hexGrid->_weights.at(q, r) != -1) {
-            delete (hexGrid->start);
-            hexGrid->start = new Hex(q, r);
-        } else {
-            delete (hexGrid->start);
-            hexGrid->start = nullptr;
-            hexGrid->path.clear();
-        }
-        if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
-            hexGrid->A_Star();
-        }
-    }
-    if (GetKey(olc::E).bPressed) {
-        if (hexGrid->_weights.at(q, r) != -1) {
-            delete (hexGrid->end);
-            hexGrid->end = new Hex(q, r);
-        } else {
-            delete (hexGrid->end);
-            hexGrid->end = nullptr;
-            hexGrid->path.clear();
-        }
-        if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
-            hexGrid->A_Star();
-        }
-    }
+    // if (GetKey(olc::Q).bPressed) {
+    //     if (hexGrid->_weights.at(q, r) != -1) {
+    //         delete (hexGrid->start);
+    //         hexGrid->start = new Hex(q, r);
+    //     } else {
+    //         delete (hexGrid->start);
+    //         hexGrid->start = nullptr;
+    //         path.clear();
+    //     }
+    //     if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
+    //         hexGrid->A_Star(path);
+    //     }
+    // }
+    // if (GetKey(olc::E).bPressed) {
+    //     if (hexGrid->_weights.at(q, r) != -1) {
+    //         delete (hexGrid->end);
+    //         hexGrid->end = new Hex(q, r);
+    //     } else {
+    //         delete (hexGrid->end);
+    //         hexGrid->end = nullptr;
+    //         path.clear();
+    //     }
+    //     if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
+    //         hexGrid->A_Star(path);
+    //     }
+    // }
 
     if (GetMouse(0).bPressed) {
         if (hexGrid->_weights.at(q, r) != -1 &&
@@ -160,9 +161,11 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         if (selectedUnit != nullptr && GetMouse(1).bPressed &&
             hexGrid->_weights.at(q, r) != -1) {
             // selectedUnit->moving = true;
-            hexGrid->units.at(selected->q, selected->r) = nullptr;
-            hexGrid->units.at(q, r) = selectedUnit;
-            selectedUnit->pos = Hex(q, r);
+            // hexGrid->units.at(selected->q, selected->r) = nullptr;
+            // hexGrid->units.at(q, r) = selectedUnit;
+            // selectedUnit->pos = Hex(q, r);
+            actions.push_back(
+                new MoveAction(0.1f, hexGrid, selectedUnit, Hex(q, r)));
             delete (selected);
             selected = new Hex(q, r);
         }

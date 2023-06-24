@@ -118,9 +118,6 @@ class HexGrid {
     double translate_x = 0.0f;
     double translate_y = 0.0f;
 
-    Hex *start = nullptr, *end = nullptr;
-    std::unordered_set<Hex> path;
-
     HexGrid(Holo::RTS *game, int width, int height, double _size) {
         this->game = game;
         this->width = width;
@@ -133,7 +130,7 @@ class HexGrid {
 
     void Draw();
 
-    void A_Star();
+    void A_Star(std::vector<Hex> &path, Hex *start, Hex *end);
 
     void ConvertToIsometric(double &x, double &y);
     void ConvertToCartesian(double &x, double &y);

@@ -1,6 +1,11 @@
 #ifndef IACTION_H
 #define IACTION_H
 
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <vector>
+
 class IAction {
   public:
     IAction(float targetTime, int amount = -1) {
@@ -58,6 +63,25 @@ class Counter : public IAction {
         std::cout << "Done"
                   << "\n";
     }
+};
+
+class Hex;
+class HexGrid;
+class Unit;
+
+class MoveAction : public IAction {
+  private:
+    HexGrid *hexGrid;
+    Unit *unit;
+
+    std::vector<Hex> path;
+    int i = 0;
+
+  public:
+    MoveAction(float targetTime, HexGrid *hexGrid, Unit *unit, Hex newPos);
+
+    void Tick();
+    void Tock();
 };
 
 #endif // ! IACTION_H
