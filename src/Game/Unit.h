@@ -18,12 +18,15 @@ class Unit {
     int i = 0;
 
     std::string name;
+    olc::Pixel color;
 
-    Unit(HexGrid *hexGrid, Hex _pos, double size, std::string name)
+    Unit(HexGrid *hexGrid, Hex _pos, double size, std::string name,
+         olc::Pixel color)
         : pos(_pos) {
         this->hexGrid = hexGrid;
         this->size = size;
         this->name = name;
+        this->color = color;
     }
 
     void Draw(Holo::RTS *game) {
@@ -34,7 +37,7 @@ class Unit {
         game->FillCircle(
             { (int)centerX,
               (int)(centerY - hexGrid->_heights.at(pos.q, pos.r) - size / 2) },
-            size, olc::BLUE);
+            size, color);
     }
 };
 

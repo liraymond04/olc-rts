@@ -140,6 +140,8 @@ class HexGrid {
 
     void Draw();
 
+    void DrawUnits();
+
     void A_Star(std::vector<Hex> &path, Hex *start, Hex *end);
 
     void ConvertToIsometric(double &x, double &y);

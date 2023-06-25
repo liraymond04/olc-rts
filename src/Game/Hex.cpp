@@ -225,6 +225,18 @@ void HexGrid::Draw() {
     }
 }
 
+void HexGrid::DrawUnits() {
+    for (int i = 0; i < height; i++) {
+        int r = i;
+        for (int j = 0; j < width; j++) {
+            int q = j - i / 2;
+            if (units.at(q, r) != nullptr) {
+                units.at(q, r)->Draw(game);
+            }
+        }
+    }
+}
+
 void HexGrid::A_Star(std::vector<Hex> &path, Hex *start, Hex *end) {
     std::priority_queue<dNode> pq;
     pq.push({ *start, 0 });

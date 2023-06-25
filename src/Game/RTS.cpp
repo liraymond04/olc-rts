@@ -18,9 +18,11 @@ bool Holo::RTS::OnUserCreate() {
                                            { 246.0f, 110.0f }, 0, 1, 0.5f);
 
     hexGrid = new HexGrid(this, 5, 5, 30);
-    hexGrid->_units.push_back(new Unit(hexGrid, Hex(0, 0), 14, "Unit 1"));
+    hexGrid->_units.push_back(
+        new Unit(hexGrid, Hex(0, 0), 25, "Unit 1", olc::BLUE));
     hexGrid->units.at(0, 0) = hexGrid->_units[0];
-    hexGrid->_units.push_back(new Unit(hexGrid, Hex(0, 1), 14, "Unit 2"));
+    hexGrid->_units.push_back(
+        new Unit(hexGrid, Hex(0, 1), 25, "Unit 2", olc::DARK_RED));
     hexGrid->units.at(0, 1) = hexGrid->_units[1];
 
     // actions.push_back(new Counter(1.0f, -1));
@@ -163,9 +165,10 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         }
     }
 
-    for (Unit *unit : hexGrid->_units) {
-        unit->Draw(this);
-    }
+    // for (Unit *unit : hexGrid->_units) {
+    //     unit->Draw(this);
+    // }
+    hexGrid->DrawUnits();
 
     if (GetKey(olc::TAB).bPressed) {
         showSliders = !showSliders;
