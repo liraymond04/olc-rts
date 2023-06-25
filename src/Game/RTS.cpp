@@ -31,7 +31,7 @@ bool Holo::RTS::OnUserCreate() {
 }
 
 bool m_bPanning = false;
-olc::vf2d m_vStartPan, m_vWorldOffset;
+olc::vf2d m_vStartPan, m_vWorldOffset = { -150, -140 };
 
 void StartPan(const olc::vi2d &vPos) {
     m_bPanning = true;
