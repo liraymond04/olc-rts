@@ -150,12 +150,22 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             selected->r >= 0) {
             height = hexGrid->_heights.at(selected->q, selected->r);
         }
-        hexGrid->DrawHex(selected->q, selected->r, hexGrid->_size, olc::YELLOW,
+        hexGrid->DrawHex(selected->q, selected->r, hexGrid->_size, olc::CYAN,
                          olc::NONE, height);
 
         Unit *selectedUnit = hexGrid->units.at(selected->q, selected->r);
         if (selectedUnit != nullptr) {
             DrawString({ 10, ScreenHeight() - 15 }, selectedUnit->name);
+            std::vector<Hex> path;
+            Hex end = Hex(q, r);
+            hexGrid->A_Star(path, &selectedUnit->pos, &end);
+            for (Hex hex : path) {
+                hexGrid->DrawHex(hex.q, hex.r, hexGrid->_size, olc::YELLOW,
+                                 olc::NONE, height);
+                // hexGrid->_colors.at(hex.q, hex.r) = olc::YELLOW;
+            }
+            hexGrid->DrawHex(q, r, hexGrid->_size, olc::CYAN, olc::NONE,
+                             height);
         }
 
         if (selectedUnit != nullptr && GetMouse(1).bPressed &&
