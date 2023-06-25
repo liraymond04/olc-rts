@@ -58,17 +58,27 @@ template <class T> class HexMap {
     std::vector<std::vector<T>> map;
 
     int left_, top_;
+    int right_, bottom_;
     T null_val;
 
   public:
     HexMap(int left, int top, int right, int bottom, T init_val, T null_val)
-        : left_(left), top_(top) {
+        : left_(left), top_(top), right_(right), bottom_(bottom) {
         this->null_val = null_val;
         int height = bottom - top + 1;
         map.resize(height);
         for (int r = 0; r < height; r++) {
             int width = right - left + 1;
             std::vector<T> row(width, init_val);
+            map[r] = row;
+        }
+    }
+
+    void clear(T val) {
+        int height = bottom_ - top_ + 1;
+        for (int r = 0; r < height; r++) {
+            int width = right_ - left_ + 1;
+            std::vector<T> row(width, val);
             map[r] = row;
         }
     }
