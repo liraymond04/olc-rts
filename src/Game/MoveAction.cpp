@@ -15,8 +15,8 @@ MoveAction::MoveAction(float targetTime, HexGrid *hexGrid, Unit *unit,
 
 void MoveAction::Tick() {
     Hex cur = unit->path[unit->i];
-    hexGrid->units.at(unit->pos.q, unit->pos.r) = nullptr;
-    hexGrid->units.at(cur.q, cur.r) = unit;
+    hexGrid->_units.at(unit->pos.q, unit->pos.r) = nullptr;
+    hexGrid->_units.at(cur.q, cur.r) = unit;
     unit->pos = cur;
     unit->i++;
     if (unit->i >= unit->path.size()) {

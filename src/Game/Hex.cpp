@@ -230,8 +230,8 @@ void HexGrid::DrawUnits() {
         int r = i;
         for (int j = 0; j < width; j++) {
             int q = j - i / 2;
-            if (units.at(q, r) != nullptr) {
-                units.at(q, r)->Draw(game);
+            if (_units.at(q, r) != nullptr) {
+                _units.at(q, r)->Draw(game);
             }
         }
     }
@@ -258,7 +258,7 @@ void HexGrid::A_Star(std::vector<Hex> &path, Hex *start, Hex *end) {
         for (int i = 0; i < 6; i++) {
             Hex neighbor = current.u.neighbor(i);
             if (_heights.at(neighbor.q, neighbor.r) != -1 &&
-                units.at(neighbor.q, neighbor.r) == nullptr) {
+                _units.at(neighbor.q, neighbor.r) == nullptr) {
                 int new_cost = cost_so_far[current.u] +
                                _weights.at(neighbor.q, neighbor.r);
                 if (cost_so_far.find(neighbor) == cost_so_far.end() ||

@@ -18,12 +18,12 @@ bool Holo::RTS::OnUserCreate() {
                                            { 246.0f, 110.0f }, 0, 1, 0.5f);
 
     hexGrid = new HexGrid(this, 5, 5, 30);
-    hexGrid->_units.push_back(
+    hexGrid->units.push_back(
         new Unit(hexGrid, Hex(0, 0), 25, "Unit 1", olc::BLUE));
-    hexGrid->units.at(0, 0) = hexGrid->_units[0];
-    hexGrid->_units.push_back(
+    hexGrid->_units.at(0, 0) = hexGrid->units[0];
+    hexGrid->units.push_back(
         new Unit(hexGrid, Hex(0, 1), 25, "Unit 2", olc::DARK_RED));
-    hexGrid->units.at(0, 1) = hexGrid->_units[1];
+    hexGrid->_units.at(0, 1) = hexGrid->units[1];
 
     // actions.push_back(new Counter(1.0f, -1));
 
@@ -91,7 +91,7 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     hexGrid->CalculateIsometricAxialCoordinates(GetMouseX(), GetMouseY(),
                                                 hexGrid->_size, q, r);
 
-    for (Unit *unit : hexGrid->_units) {
+    for (Unit *unit : hexGrid->units) {
         if (unit->moving) {
             hexGrid->DrawHex(unit->pos.q, unit->pos.r, hexGrid->_size,
                              olc::YELLOW, olc::NONE,
@@ -138,7 +138,7 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         hexGrid->DrawHex(selected->q, selected->r, hexGrid->_size, olc::CYAN,
                          olc::NONE, height);
 
-        Unit *selectedUnit = hexGrid->units.at(selected->q, selected->r);
+        Unit *selectedUnit = hexGrid->_units.at(selected->q, selected->r);
         if (selectedUnit != nullptr) {
             DrawString({ 10, ScreenHeight() - 15 }, selectedUnit->name);
             std::vector<Hex> path;
@@ -154,7 +154,7 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
 
         if (selectedUnit != nullptr && GetMouse(1).bPressed &&
             hexGrid->_weights.at(q, r) != -1 &&
-            hexGrid->units.at(q, r) == nullptr) {
+            hexGrid->_units.at(q, r) == nullptr) {
             // selectedUnit->moving = true;
             // hexGrid->units.at(selected->q, selected->r) = nullptr;
             // hexGrid->units.at(q, r) = selectedUnit;
