@@ -19,10 +19,10 @@ bool Holo::RTS::OnUserCreate() {
 
     hexGrid = new HexGrid(this, 5, 5, 30);
     hexGrid->units.push_back(
-        new Unit(hexGrid, Hex(0, 0), 25, "Unit 1", olc::BLUE));
+        new Unit(hexGrid, Hex(0, 0), 14, "Unit 1", olc::BLUE));
     hexGrid->_units.at(0, 0) = hexGrid->units[0];
     hexGrid->units.push_back(
-        new Unit(hexGrid, Hex(0, 1), 25, "Unit 2", olc::DARK_RED));
+        new Unit(hexGrid, Hex(0, 1), 14, "Unit 2", olc::DARK_RED));
     hexGrid->_units.at(0, 1) = hexGrid->units[1];
 
     // actions.push_back(new Counter(1.0f, -1));
