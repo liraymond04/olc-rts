@@ -74,9 +74,6 @@ class MoveAction : public IAction {
     HexGrid *hexGrid;
     Unit *unit;
 
-    std::vector<Hex> path;
-    int i = 0;
-
   public:
     MoveAction(float targetTime, HexGrid *hexGrid, Unit *unit, Hex newPos);
 

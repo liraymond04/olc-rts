@@ -12,7 +12,10 @@ class Unit {
   public:
     Hex pos;
     double size;
+
     bool moving = false;
+    std::vector<Hex> path;
+    int i = 0;
 
     std::string name;
 

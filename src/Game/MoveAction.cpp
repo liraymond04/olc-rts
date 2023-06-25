@@ -8,17 +8,18 @@ MoveAction::MoveAction(float targetTime, HexGrid *hexGrid, Unit *unit,
     this->hexGrid = hexGrid;
     this->unit = unit;
     unit->moving = true;
-    hexGrid->A_Star(path, &unit->pos, &newPos);
+    unit->path.clear();
+    unit->i = 0;
+    hexGrid->A_Star(unit->path, &unit->pos, &newPos);
 }
 
 void MoveAction::Tick() {
-    if (i < path.size()) {
-        Hex cur = path[i];
-        hexGrid->units.at(unit->pos.q, unit->pos.r) = nullptr;
-        hexGrid->units.at(cur.q, cur.r) = unit;
-        unit->pos = cur;
-        i++;
-    } else {
+    Hex cur = unit->path[unit->i];
+    hexGrid->units.at(unit->pos.q, unit->pos.r) = nullptr;
+    hexGrid->units.at(cur.q, cur.r) = unit;
+    unit->pos = cur;
+    unit->i++;
+    if (unit->i >= unit->path.size()) {
         done = true;
     }
 }

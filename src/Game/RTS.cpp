@@ -87,6 +87,19 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     hexGrid->CalculateIsometricAxialCoordinates(GetMouseX(), GetMouseY(),
                                                 hexGrid->_size, q, r);
 
+    for (Unit &unit : hexGrid->_units) {
+        if (unit.moving) {
+            hexGrid->DrawHex(unit.pos.q, unit.pos.r, hexGrid->_size,
+                             olc::YELLOW, olc::NONE,
+                             hexGrid->_heights.at(unit.pos.q, unit.pos.r));
+            for (int i = unit.i; i < unit.path.size(); i++) {
+                Hex hex = unit.path[i];
+                hexGrid->DrawHex(hex.q, hex.r, hexGrid->_size, olc::YELLOW,
+                                 olc::NONE, hexGrid->_heights.at(hex.q, hex.r));
+            }
+        }
+    }
+
     double height = 10;
     if (q < 5 && q >= 0 && r < 5 && r >= 0) {
         height = hexGrid->_heights.at(q, r);
@@ -95,43 +108,11 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     if (GetKey(olc::Z).bPressed) {
         hexGrid->_heights.at(q, r) += 5;
         hexGrid->_weights.at(q, r) += 1;
-        // if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
-        //     hexGrid->A_Star(path);
-        // }
     }
     if (GetKey(olc::C).bPressed) {
         hexGrid->_heights.at(q, r) -= 5;
         hexGrid->_weights.at(q, r) -= 1;
-        // if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
-        //     hexGrid->A_Star(path);
-        // }
     }
-    // if (GetKey(olc::Q).bPressed) {
-    //     if (hexGrid->_weights.at(q, r) != -1) {
-    //         delete (hexGrid->start);
-    //         hexGrid->start = new Hex(q, r);
-    //     } else {
-    //         delete (hexGrid->start);
-    //         hexGrid->start = nullptr;
-    //         path.clear();
-    //     }
-    //     if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
-    //         hexGrid->A_Star(path);
-    //     }
-    // }
-    // if (GetKey(olc::E).bPressed) {
-    //     if (hexGrid->_weights.at(q, r) != -1) {
-    //         delete (hexGrid->end);
-    //         hexGrid->end = new Hex(q, r);
-    //     } else {
-    //         delete (hexGrid->end);
-    //         hexGrid->end = nullptr;
-    //         path.clear();
-    //     }
-    //     if (hexGrid->start != nullptr && hexGrid->end != nullptr) {
-    //         hexGrid->A_Star(path);
-    //     }
-    // }
 
     if (GetMouse(0).bPressed) {
         if (hexGrid->_weights.at(q, r) != -1 &&
@@ -161,8 +142,7 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             hexGrid->A_Star(path, &selectedUnit->pos, &end);
             for (Hex hex : path) {
                 hexGrid->DrawHex(hex.q, hex.r, hexGrid->_size, olc::YELLOW,
-                                 olc::NONE, height);
-                // hexGrid->_colors.at(hex.q, hex.r) = olc::YELLOW;
+                                 olc::NONE, hexGrid->_heights.at(hex.q, hex.r));
             }
             hexGrid->DrawHex(q, r, hexGrid->_size, olc::CYAN, olc::NONE,
                              height);
@@ -179,10 +159,6 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             delete (selected);
             selected = new Hex(q, r);
         }
-    }
-
-    if (GetKey(olc::G).bPressed) {
-        actions[0]->done = true;
     }
 
     for (Unit &unit : hexGrid->_units) {
