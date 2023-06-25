@@ -257,7 +257,8 @@ void HexGrid::A_Star(std::vector<Hex> &path, Hex *start, Hex *end) {
 
         for (int i = 0; i < 6; i++) {
             Hex neighbor = current.u.neighbor(i);
-            if (_heights.at(neighbor.q, neighbor.r) != -1) {
+            if (_heights.at(neighbor.q, neighbor.r) != -1 &&
+                units.at(neighbor.q, neighbor.r) == nullptr) {
                 int new_cost = cost_so_far[current.u] +
                                _weights.at(neighbor.q, neighbor.r);
                 if (cost_so_far.find(neighbor) == cost_so_far.end() ||

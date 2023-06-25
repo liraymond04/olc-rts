@@ -153,7 +153,8 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         }
 
         if (selectedUnit != nullptr && GetMouse(1).bPressed &&
-            hexGrid->_weights.at(q, r) != -1) {
+            hexGrid->_weights.at(q, r) != -1 &&
+            hexGrid->units.at(q, r) == nullptr) {
             // selectedUnit->moving = true;
             // hexGrid->units.at(selected->q, selected->r) = nullptr;
             // hexGrid->units.at(q, r) = selectedUnit;
