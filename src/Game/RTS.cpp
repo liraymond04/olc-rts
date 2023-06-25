@@ -18,8 +18,10 @@ bool Holo::RTS::OnUserCreate() {
                                            { 246.0f, 110.0f }, 0, 1, 0.5f);
 
     hexGrid = new HexGrid(this, 5, 5, 30);
-    hexGrid->_units.push_back(Unit(hexGrid, Hex(0, 0), 14, "Unit 1"));
-    hexGrid->units.at(0, 0) = &hexGrid->_units[0];
+    hexGrid->_units.push_back(new Unit(hexGrid, Hex(0, 0), 14, "Unit 1"));
+    hexGrid->units.at(0, 0) = hexGrid->_units[0];
+    hexGrid->_units.push_back(new Unit(hexGrid, Hex(0, 1), 14, "Unit 2"));
+    hexGrid->units.at(0, 1) = hexGrid->_units[1];
 
     // actions.push_back(new Counter(1.0f, -1));
 
@@ -87,13 +89,13 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     hexGrid->CalculateIsometricAxialCoordinates(GetMouseX(), GetMouseY(),
                                                 hexGrid->_size, q, r);
 
-    for (Unit &unit : hexGrid->_units) {
-        if (unit.moving) {
-            hexGrid->DrawHex(unit.pos.q, unit.pos.r, hexGrid->_size,
+    for (Unit *unit : hexGrid->_units) {
+        if (unit->moving) {
+            hexGrid->DrawHex(unit->pos.q, unit->pos.r, hexGrid->_size,
                              olc::YELLOW, olc::NONE,
-                             hexGrid->_heights.at(unit.pos.q, unit.pos.r));
-            for (int i = unit.i; i < unit.path.size(); i++) {
-                Hex hex = unit.path[i];
+                             hexGrid->_heights.at(unit->pos.q, unit->pos.r));
+            for (int i = unit->i; i < unit->path.size(); i++) {
+                Hex hex = unit->path[i];
                 hexGrid->DrawHex(hex.q, hex.r, hexGrid->_size, olc::YELLOW,
                                  olc::NONE, hexGrid->_heights.at(hex.q, hex.r));
             }
@@ -161,8 +163,8 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         }
     }
 
-    for (Unit &unit : hexGrid->_units) {
-        unit.Draw(this);
+    for (Unit *unit : hexGrid->_units) {
+        unit->Draw(this);
     }
 
     if (GetKey(olc::TAB).bPressed) {

@@ -117,7 +117,7 @@ class HexGrid {
     HexMap<int> _weights{ 0, 0, 4, 4, 1, -1 };
     HexMap<Unit *> units{ 0, 0, 4, 4, nullptr, nullptr };
 
-    std::vector<Unit> _units;
+    std::vector<Unit *> _units;
 
     double scale = 1.0;
     double rotation_deg = 10.0;
