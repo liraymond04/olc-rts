@@ -110,8 +110,9 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             //                  olc::YELLOW, olc::NONE,
             //                  hexGrid->_heights.at(unit->pos.q, unit->pos.r));
             double prevX, prevY;
-            hexGrid->CalculateHexagonCenter(unit->pos.q, unit->pos.r,
-                                            hexGrid->_size, prevX, prevY);
+            int prevPosX = unit->pos.q, prevPosY = unit->pos.r;
+            hexGrid->CalculateHexagonCenter(prevPosX, prevPosY, hexGrid->_size,
+                                            prevX, prevY);
             hexGrid->ConvertToIsometric(prevX, prevY);
             for (int i = unit->i; i < unit->path.size(); i++) {
                 Hex hex = unit->path[i];
@@ -121,11 +122,13 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                 hexGrid->ConvertToIsometric(centerX, centerY);
                 DrawLine({ (int)centerX,
                            (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
-                         { (int)prevX,
-                           (int)prevY - hexGrid->_heights.at(hex.q, hex.r) },
+                         { (int)prevX, (int)prevY - hexGrid->_heights.at(
+                                                        prevPosX, prevPosY) },
                          olc::YELLOW);
                 prevX = centerX;
                 prevY = centerY;
+                prevPosX = hex.q;
+                prevPosY = hex.r;
                 // hexGrid->DrawHex(hex.q, hex.r, hexGrid->_size, olc::YELLOW,
                 //                  olc::NONE, hexGrid->_heights.at(hex.q,
                 //                  hex.r));
@@ -235,11 +238,17 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                         { (int)centerX,
                           (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
                         { (int)prevX,
-                          (int)prevY - hexGrid->_heights.at(hex.q, hex.r) },
+                          (int)prevY - hexGrid->_heights.at(_q, _r) },
                         olc::CYAN);
                     prevX = centerX;
                     prevY = centerY;
+                    _q = hex.q;
+                    _r = hex.r;
                 }
+            }
+            height = 10;
+            if (q < 5 && q >= 0 && r < 5 && r >= 0) {
+                height = hexGrid->_heights.at(q, r);
             }
             hexGrid->DrawHex(q, r, hexGrid->_size, olc::CYAN, olc::NONE,
                              height);
