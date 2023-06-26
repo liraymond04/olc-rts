@@ -10,14 +10,7 @@ using namespace std;
 #include "olcPixelGameEngine.h"
 #include "extensions/olcPGEX_QuickGUI.h"
 
-#include "IAction.h"
-
 class HexGrid;
-
-// fixed game speed (ticks)
-// action queue (std::vector<IAction>)
-// each action has a timer incremented by game speed
-// action can have a counter, until removed from queue
 
 // server client model
 // server thread, client thread
@@ -25,6 +18,9 @@ class HexGrid;
 
 // tile movement lerp based on unit speed
 // while center in tile, is unit pos
+
+// fix draw order
+// draw hexagon side faces
 
 namespace Holo {
 class RTS : public olc::PixelGameEngine {
@@ -47,7 +43,6 @@ class RTS : public olc::PixelGameEngine {
 
     float fTargetFrameTime = 1.0f / 60.0f; // Virtual FPS of 60fps
     float fAccumulatedTime = 0.0f;
-    std::vector<IAction *> actions;
 
   public:
     void Tick();

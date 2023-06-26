@@ -4,6 +4,8 @@
 #include "RTS.h"
 #include "Hex.h"
 
+class IAction;
+
 class Unit {
   private:
     /* data */
@@ -15,10 +17,13 @@ class Unit {
 
     bool moving = false;
     std::vector<Hex> path;
+    std::vector<vector<Hex>> queued;
     int i = 0;
 
     std::string name;
     olc::Pixel color;
+
+    std::vector<IAction *> actions;
 
     Unit(HexGrid *hexGrid, Hex _pos, double size, std::string name,
          olc::Pixel color)

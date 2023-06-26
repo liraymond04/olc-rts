@@ -104,6 +104,7 @@ struct dNode {
 };
 
 class Unit;
+class IAction;
 
 class HexGrid {
   private:
@@ -118,6 +119,8 @@ class HexGrid {
     HexMap<Unit *> _units{ 0, 0, 4, 4, nullptr, nullptr };
 
     std::vector<Unit *> units;
+
+    std::vector<IAction *> actions;
 
     double scale = 1.0;
     double rotation_deg = 10.0;

@@ -22,6 +22,7 @@ class IAction {
 
   public:
     bool done = false;
+    bool started = false;
     void Update(float gameSpeed) {
         bool tick = true;
         accumulatedTime += gameSpeed;
@@ -44,6 +45,8 @@ class IAction {
         }
     }
 
+    virtual void Start() = 0;
+
     virtual void Tick() = 0;
     virtual void Tock() = 0;
 };
@@ -53,6 +56,8 @@ class Counter : public IAction {
     // using IAction::IAction;
     explicit Counter(float targetTime, int countTo)
         : IAction(targetTime, countTo) {}
+
+    void Start() {}
 
     void Tick() {
         std::cout << "Hi"
@@ -72,11 +77,14 @@ class Unit;
 class MoveAction : public IAction {
   private:
     HexGrid *hexGrid;
-    Unit *unit;
 
   public:
-    MoveAction(float targetTime, HexGrid *hexGrid, Unit *unit, Hex newPos);
+    Unit *unit;
 
+    MoveAction(float targetTime, HexGrid *hexGrid, Unit *unit, Hex startPos,
+               Hex newPos);
+
+    void Start();
     void Tick();
     void Tock();
 };
