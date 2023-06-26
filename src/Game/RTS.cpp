@@ -93,13 +93,29 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
 
     for (Unit *unit : hexGrid->units) {
         if (unit->moving) {
-            hexGrid->DrawHex(unit->pos.q, unit->pos.r, hexGrid->_size,
-                             olc::YELLOW, olc::NONE,
-                             hexGrid->_heights.at(unit->pos.q, unit->pos.r));
+            // hexGrid->DrawHex(unit->pos.q, unit->pos.r, hexGrid->_size,
+            //                  olc::YELLOW, olc::NONE,
+            //                  hexGrid->_heights.at(unit->pos.q, unit->pos.r));
+            double prevX, prevY;
+            hexGrid->CalculateHexagonCenter(unit->pos.q, unit->pos.r,
+                                            hexGrid->_size, prevX, prevY);
+            hexGrid->ConvertToIsometric(prevX, prevY);
             for (int i = unit->i; i < unit->path.size(); i++) {
                 Hex hex = unit->path[i];
-                hexGrid->DrawHex(hex.q, hex.r, hexGrid->_size, olc::YELLOW,
-                                 olc::NONE, hexGrid->_heights.at(hex.q, hex.r));
+                double centerX, centerY;
+                hexGrid->CalculateHexagonCenter(hex.q, hex.r, hexGrid->_size,
+                                                centerX, centerY);
+                hexGrid->ConvertToIsometric(centerX, centerY);
+                DrawLine({ (int)centerX,
+                           (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
+                         { (int)prevX,
+                           (int)prevY - hexGrid->_heights.at(hex.q, hex.r) },
+                         olc::YELLOW);
+                prevX = centerX;
+                prevY = centerY;
+                // hexGrid->DrawHex(hex.q, hex.r, hexGrid->_size, olc::YELLOW,
+                //                  olc::NONE, hexGrid->_heights.at(hex.q,
+                //                  hex.r));
             }
         }
     }
@@ -160,9 +176,9 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             // hexGrid->units.at(q, r) = selectedUnit;
             // selectedUnit->pos = Hex(q, r);
             actions.push_back(
-                new MoveAction(0.1f, hexGrid, selectedUnit, Hex(q, r)));
-            delete (selected);
-            selected = new Hex(q, r);
+                new MoveAction(2.0f, hexGrid, selectedUnit, Hex(q, r)));
+            // delete (selected);
+            // selected = new Hex(q, r);
         }
     }
 
