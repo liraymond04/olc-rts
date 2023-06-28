@@ -220,11 +220,10 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
         game->FillTriangle(
             { (int)verticesX[0], (int)(verticesY[0] - height - 1) },
             { (int)verticesX[1], (int)(verticesY[1] - height - 1) },
-            { (int)verticesX[2], (int)(verticesY[2] - height - 1) }, fill,
-            mask);
+            { (int)verticesX[2], (int)(verticesY[2] - height) }, fill, mask);
         game->FillTriangle(
             { (int)verticesX[0], (int)(verticesY[0] - height - 1) },
-            { (int)verticesX[2], (int)(verticesY[2] - height - 1) },
+            { (int)verticesX[2], (int)(verticesY[2] - height) },
             { (int)verticesX[3], (int)(verticesY[3] - height) }, fill, mask);
         game->FillTriangle(
             { (int)verticesX[0], (int)(verticesY[0] - height - 1) },
