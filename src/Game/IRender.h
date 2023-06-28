@@ -49,11 +49,13 @@ class RenderHex : public IRender {
     double height;
     HexGrid *hexGrid;
     int *mask;
+    olc::Pixel side;
 
   public:
     RenderHex(int q, int r, double sideLength, olc::Pixel color = olc::WHITE,
               olc::Pixel fill = olc::NONE, double height = 0.0f,
-              HexGrid *hexGrid = nullptr, int *mask = nullptr) {
+              HexGrid *hexGrid = nullptr, int *mask = nullptr,
+              olc::Pixel side = olc::NONE) {
         this->q = q;
         this->r = r;
         this->sideLength = sideLength;
@@ -62,10 +64,11 @@ class RenderHex : public IRender {
         this->height = height;
         this->hexGrid = hexGrid;
         this->mask = mask;
+        this->side = side;
     }
 
     void Draw() override {
-        hexGrid->DrawHex(q, r, sideLength, color, fill, height, mask);
+        hexGrid->DrawHex(q, r, sideLength, color, fill, height, mask, side);
     }
 };
 

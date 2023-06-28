@@ -141,7 +141,7 @@ class HexGrid {
 
     void DrawHex(int q, int r, double sideLength, olc::Pixel color = olc::WHITE,
                  olc::Pixel fill = olc::NONE, double height = 0,
-                 int *mask = nullptr);
+                 int *mask = nullptr, olc::Pixel side = olc::NONE);
 
     void Draw(std::vector<std::vector<IRender *>> &renderQueue);
 

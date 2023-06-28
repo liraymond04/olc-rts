@@ -150,7 +150,8 @@ void HexGrid::CalculateIsometricAxialCoordinates(double centerX, double centerY,
 }
 
 void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
-                      olc::Pixel fill, double height, int *mask) {
+                      olc::Pixel fill, double height, int *mask,
+                      olc::Pixel side) {
     double verticesX[6];
     double verticesY[6];
 
@@ -168,32 +169,71 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
                        outline, 4294967295U, mask);
     }
 
-    // Draw lines connecting bottom and top hexagons
+    // Draw back lines connecting bottom and top hexagons
     if (height > 0) {
-        for (int i = 0; i < 6; i++) {
+        for (int i = 3; i < 6; i++) {
             game->DrawLine(verticesX[i], verticesY[i], verticesX[i],
                            verticesY[i] - height, outline, 4294967295U, mask);
         }
     }
 
+    // Colour side faces
+    if (side != olc::NONE && height > 0) {
+        game->FillTriangle({ (int)verticesX[0], (int)(verticesY[0] - height) },
+                           { (int)verticesX[0], (int)(verticesY[0] - 1) },
+                           { (int)verticesX[1], (int)(verticesY[1] - 1) }, side,
+                           mask);
+        game->FillTriangle({ (int)verticesX[1], (int)(verticesY[1] - height) },
+                           { (int)verticesX[0], (int)(verticesY[0] - height) },
+                           { (int)verticesX[1], (int)(verticesY[1] - 1) }, side,
+                           mask);
+        game->FillTriangle({ (int)verticesX[1], (int)(verticesY[1] - height) },
+                           { (int)verticesX[1], (int)(verticesY[1] - 1) },
+                           { (int)verticesX[2], (int)(verticesY[2] - 1) }, side,
+                           mask);
+        game->FillTriangle({ (int)verticesX[2], (int)(verticesY[2] - height) },
+                           { (int)verticesX[1], (int)(verticesY[1] - height) },
+                           { (int)verticesX[2], (int)(verticesY[2] - 1) }, side,
+                           mask);
+        game->FillTriangle({ (int)verticesX[0], (int)(verticesY[0] - height) },
+                           { (int)verticesX[0], (int)(verticesY[0] - 1) },
+                           { (int)verticesX[5], (int)(verticesY[5] - 1) }, side,
+                           mask);
+        game->FillTriangle({ (int)verticesX[5], (int)(verticesY[5] - height) },
+                           { (int)verticesX[0], (int)(verticesY[0] - height) },
+                           { (int)verticesX[5], (int)(verticesY[5] - 1) }, side,
+                           mask);
+    }
+
+    // Draw front lines connecting bottom and top hexagons
+    if (height > 0) {
+        for (int i = 0; i < 3; i++) {
+            game->DrawLine(verticesX[i], verticesY[i], verticesX[i],
+                           verticesY[i] - height, outline, 4294967295U, mask);
+        }
+    }
+    game->DrawLine(verticesX[5], verticesY[5], verticesX[5],
+                   verticesY[5] - height, outline, 4294967295U, mask);
+
     // Colour top face
     if (fill != olc::NONE) {
         game->FillTriangle(
-            { (int)verticesX[0], (int)verticesY[0] - (int)height },
-            { (int)verticesX[1], (int)verticesY[1] - (int)height },
-            { (int)verticesX[2], (int)verticesY[2] - (int)height }, fill);
+            { (int)verticesX[0], (int)(verticesY[0] - height - 1) },
+            { (int)verticesX[1], (int)(verticesY[1] - height - 1) },
+            { (int)verticesX[2], (int)(verticesY[2] - height - 1) }, fill,
+            mask);
         game->FillTriangle(
-            { (int)verticesX[0], (int)verticesY[0] - (int)height },
-            { (int)verticesX[2], (int)verticesY[2] - (int)height },
-            { (int)verticesX[3], (int)verticesY[3] - (int)height }, fill);
+            { (int)verticesX[0], (int)(verticesY[0] - height - 1) },
+            { (int)verticesX[2], (int)(verticesY[2] - height - 1) },
+            { (int)verticesX[3], (int)(verticesY[3] - height) }, fill, mask);
         game->FillTriangle(
-            { (int)verticesX[0], (int)verticesY[0] - (int)height },
-            { (int)verticesX[3], (int)verticesY[3] - (int)height },
-            { (int)verticesX[4], (int)verticesY[4] - (int)height }, fill);
+            { (int)verticesX[0], (int)(verticesY[0] - height - 1) },
+            { (int)verticesX[3], (int)(verticesY[3] - height) },
+            { (int)verticesX[4], (int)(verticesY[4] - height) }, fill, mask);
         game->FillTriangle(
-            { (int)verticesX[0], (int)verticesY[0] - (int)height },
-            { (int)verticesX[4], (int)verticesY[4] - (int)height },
-            { (int)verticesX[5], (int)verticesY[5] - (int)height }, fill);
+            { (int)verticesX[0], (int)(verticesY[0] - height - 1) },
+            { (int)verticesX[4], (int)(verticesY[4] - height) },
+            { (int)verticesX[5], (int)(verticesY[5] - height) }, fill, mask);
     }
 
     // Draw top outline
@@ -212,6 +252,7 @@ void HexGrid::Draw(std::vector<std::vector<IRender *>> &renderQueue) {
         for (int j = 0; j < width; j++) {
             int q = j - i / 2;
             olc::Pixel col = olc::DARK_GREEN;
+            olc::Pixel side = olc::GREEN;
             // if (path.find(Hex(q, r)) != path.end()) {
             //     col = olc::YELLOW;
             // }
@@ -222,7 +263,8 @@ void HexGrid::Draw(std::vector<std::vector<IRender *>> &renderQueue) {
             //     col = olc::RED;
             // }
             renderQueue[r].push_back(new RenderHex(q, r, _size, olc::WHITE, col,
-                                                   _heights.at(q, r), this));
+                                                   _heights.at(q, r), this,
+                                                   nullptr, side));
         }
     }
 }
