@@ -112,9 +112,6 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
 
     for (Unit *unit : hexGrid->units) {
         if (unit->moving) {
-            // hexGrid->DrawHex(unit->pos.q, unit->pos.r, hexGrid->_size,
-            //                  olc::YELLOW, olc::NONE,
-            //                  hexGrid->_heights.at(unit->pos.q, unit->pos.r));
             double prevX, prevY;
             int prevPosX = unit->pos.q, prevPosY = unit->pos.r;
             hexGrid->CalculateHexagonCenter(prevPosX, prevPosY, hexGrid->_size,
@@ -136,9 +133,6 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                 prevY = centerY;
                 prevPosX = hex.q;
                 prevPosY = hex.r;
-                // hexGrid->DrawHex(hex.q, hex.r, hexGrid->_size, olc::YELLOW,
-                //                  olc::NONE, hexGrid->_heights.at(hex.q,
-                //                  hex.r));
             }
             for (std::vector<Hex> &p : unit->queued) {
                 for (Hex hex : p) {
@@ -215,11 +209,6 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                                     &end);
                 }
             }
-            // for (Hex hex : path) {
-            //     hexGrid->DrawHex(hex.q, hex.r, hexGrid->_size, olc::YELLOW,
-            //                      olc::NONE, hexGrid->_heights.at(hex.q,
-            //                      hex.r));
-            // }
             double prevX, prevY;
             int _q = selectedUnit->pos.q, _r = selectedUnit->pos.r;
             if (!selectedUnit->path.empty()) {
@@ -264,10 +253,6 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         if (selectedUnit != nullptr && GetMouse(1).bPressed &&
             hexGrid->_weights.at(q, r) != -1 &&
             hexGrid->_units.at(q, r) == nullptr) {
-            // selectedUnit->moving = true;
-            // hexGrid->units.at(selected->q, selected->r) = nullptr;
-            // hexGrid->units.at(q, r) = selectedUnit;
-            // selectedUnit->pos = Hex(q, r);
             if (selectedUnit->actions.empty()) {
                 hexGrid->actions.push_back(new MoveAction(
                     1.0f, hexGrid, selectedUnit, selectedUnit->pos, Hex(q, r)));
@@ -280,14 +265,9 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                 selectedUnit->actions.push_back(new MoveAction(
                     1.0f, hexGrid, selectedUnit, start, Hex(q, r)));
             }
-            // delete (selected);
-            // selected = new Hex(q, r);
         }
     }
 
-    // for (Unit *unit : hexGrid->_units) {
-    //     unit->Draw(this);
-    // }
     hexGrid->DrawUnits(renderQueue);
 
     if (GetKey(olc::TAB).bPressed) {
