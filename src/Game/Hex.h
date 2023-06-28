@@ -105,6 +105,7 @@ struct dNode {
 
 class Unit;
 class IAction;
+class IRender;
 
 class HexGrid {
   private:
@@ -141,9 +142,9 @@ class HexGrid {
     void DrawHex(int q, int r, double sideLength, olc::Pixel color = olc::WHITE,
                  olc::Pixel fill = olc::NONE, double height = 0);
 
-    void Draw();
+    void Draw(std::vector<std::vector<IRender *>> &renderQueue);
 
-    void DrawUnits();
+    void DrawUnits(std::vector<std::vector<IRender *>> &renderQueue);
 
     void A_Star(std::vector<Hex> &path, Hex *start, Hex *end);
 

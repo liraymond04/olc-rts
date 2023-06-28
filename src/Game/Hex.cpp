@@ -1,5 +1,6 @@
 #include "Hex.h"
 #include "Unit.h"
+#include "IRender.h"
 
 std::vector<Hex> Hex::directions = { Hex(1, 0),  Hex(1, -1), Hex(0, -1),
                                      Hex(-1, 0), Hex(-1, 1), Hex(0, 1) },
@@ -205,7 +206,7 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
     }
 }
 
-void HexGrid::Draw() {
+void HexGrid::Draw(std::vector<std::vector<IRender *>> &renderQueue) {
     for (int i = 0; i < height; i++) {
         int r = i;
         for (int j = 0; j < width; j++) {
@@ -220,19 +221,18 @@ void HexGrid::Draw() {
             // if (end != nullptr && end->q == q && end->r == r) {
             //     col = olc::RED;
             // }
-            DrawHex(q, r, _size, olc::WHITE, col, _heights.at(q, r));
+            renderQueue[r].push_back(new RenderHex(q, r, _size, olc::WHITE, col,
+                                                   _heights.at(q, r), this));
         }
     }
 }
 
-void HexGrid::DrawUnits() {
+void HexGrid::DrawUnits(std::vector<std::vector<IRender *>> &renderQueue) {
     for (int i = 0; i < height; i++) {
         int r = i;
         for (int j = 0; j < width; j++) {
             int q = j - i / 2;
-            if (_units.at(q, r) != nullptr) {
-                _units.at(q, r)->Draw(game);
-            }
+            renderQueue[r].push_back(new RenderUnit(q, r, this, this->game));
         }
     }
 }

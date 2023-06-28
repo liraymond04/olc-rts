@@ -2,6 +2,7 @@
 #include "Hex.h"
 #include "Unit.h"
 #include "IAction.h"
+#include "IRender.h"
 
 bool Holo::RTS::OnUserCreate() {
     guiSlider1 = new olc::QuickGUI::Slider(guiManager, { 30.0f, 10.0f },
@@ -79,6 +80,9 @@ void Holo::RTS::Tick() {
 }
 
 bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
+    std::vector<std::vector<IRender *>> renderQueue;
+    renderQueue.resize(hexGrid->height);
+
     guiManager.Update(this);
 
     bool tick = true;
@@ -98,7 +102,9 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
 
     hexGrid->translate_x = m_vWorldOffset.x;
     hexGrid->translate_y = m_vWorldOffset.y;
-    hexGrid->Draw();
+    hexGrid->Draw(renderQueue);
+
+    std::vector<IRender *> ui;
 
     double q = 0, r = 0;
     hexGrid->CalculateIsometricAxialCoordinates(GetMouseX(), GetMouseY(),
@@ -120,11 +126,12 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                 hexGrid->CalculateHexagonCenter(hex.q, hex.r, hexGrid->_size,
                                                 centerX, centerY);
                 hexGrid->ConvertToIsometric(centerX, centerY);
-                DrawLine({ (int)centerX,
-                           (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
-                         { (int)prevX, (int)prevY - hexGrid->_heights.at(
-                                                        prevPosX, prevPosY) },
-                         olc::YELLOW);
+                ui.push_back(new RenderLine(
+                    { (int)centerX,
+                      (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
+                    { (int)prevX,
+                      (int)prevY - hexGrid->_heights.at(prevPosX, prevPosY) },
+                    olc::YELLOW, this));
                 prevX = centerX;
                 prevY = centerY;
                 prevPosX = hex.q;
@@ -139,12 +146,12 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                     hexGrid->CalculateHexagonCenter(
                         hex.q, hex.r, hexGrid->_size, centerX, centerY);
                     hexGrid->ConvertToIsometric(centerX, centerY);
-                    DrawLine(
+                    ui.push_back(new RenderLine(
                         { (int)centerX,
                           (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
                         { (int)prevX,
                           (int)prevY - hexGrid->_heights.at(hex.q, hex.r) },
-                        olc::CYAN);
+                        olc::CYAN, this));
                     prevX = centerX;
                     prevY = centerY;
                 }
@@ -153,10 +160,11 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     }
 
     double height = 10;
-    if (q < 5 && q >= 0 && r < 5 && r >= 0) {
+    if (hexGrid->_weights.at(q, r) != -1) {
         height = hexGrid->_heights.at(q, r);
+        ui.push_back(new RenderHex(q, r, hexGrid->_size, olc::RED, olc::NONE,
+                                   height, hexGrid));
     }
-    hexGrid->DrawHex(q, r, hexGrid->_size, olc::RED, olc::NONE, height);
     if (GetKey(olc::Z).bPressed) {
         hexGrid->_heights.at(q, r) += 5;
         hexGrid->_weights.at(q, r) += 1;
@@ -185,12 +193,11 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     }
     if (selected != nullptr) {
         height = 10;
-        if (selected->q < 5 && selected->q >= 0 && selected->r < 5 &&
-            selected->r >= 0) {
+        if (hexGrid->_weights.at(selected->q, selected->r) != -1) {
             height = hexGrid->_heights.at(selected->q, selected->r);
+            ui.push_back(new RenderHex(selected->q, selected->r, hexGrid->_size,
+                                       olc::CYAN, olc::NONE, height, hexGrid));
         }
-        hexGrid->DrawHex(selected->q, selected->r, hexGrid->_size, olc::CYAN,
-                         olc::NONE, height);
 
         Unit *selectedUnit = hexGrid->_units.at(selected->q, selected->r);
         if (selectedUnit != nullptr) {
@@ -234,12 +241,12 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                     hexGrid->CalculateHexagonCenter(
                         hex.q, hex.r, hexGrid->_size, centerX, centerY);
                     hexGrid->ConvertToIsometric(centerX, centerY);
-                    DrawLine(
+                    ui.push_back(new RenderLine(
                         { (int)centerX,
                           (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
                         { (int)prevX,
                           (int)prevY - hexGrid->_heights.at(_q, _r) },
-                        olc::CYAN);
+                        olc::CYAN, this));
                     prevX = centerX;
                     prevY = centerY;
                     _q = hex.q;
@@ -247,11 +254,11 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                 }
             }
             height = 10;
-            if (q < 5 && q >= 0 && r < 5 && r >= 0) {
+            if (hexGrid->_weights.at(q, r) != -1) {
                 height = hexGrid->_heights.at(q, r);
+                ui.push_back(new RenderHex(q, r, hexGrid->_size, olc::CYAN,
+                                           olc::NONE, height, hexGrid));
             }
-            hexGrid->DrawHex(q, r, hexGrid->_size, olc::CYAN, olc::NONE,
-                             height);
         }
 
         if (selectedUnit != nullptr && GetMouse(1).bPressed &&
@@ -281,7 +288,7 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     // for (Unit *unit : hexGrid->_units) {
     //     unit->Draw(this);
     // }
-    hexGrid->DrawUnits();
+    hexGrid->DrawUnits(renderQueue);
 
     if (GetKey(olc::TAB).bPressed) {
         showSliders = !showSliders;
@@ -304,6 +311,14 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     }
     if (GetKey(olc::D).bHeld) {
         hexGrid->_size -= 25.0f * fElapsedTime;
+    }
+
+    renderQueue.push_back(ui);
+    for (std::vector<IRender *> row : renderQueue) {
+        for (IRender *render : row) {
+            render->Draw();
+            delete render;
+        }
     }
 
     return true;
