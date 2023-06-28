@@ -150,7 +150,7 @@ void HexGrid::CalculateIsometricAxialCoordinates(double centerX, double centerY,
 }
 
 void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
-                      olc::Pixel fill, double height) {
+                      olc::Pixel fill, double height, int *mask) {
     double verticesX[6];
     double verticesY[6];
 
@@ -165,14 +165,14 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
     for (int i = 0; i < 6; i++) {
         int j = (i + 1) % 6; // Index of the next vertex with wrapping
         game->DrawLine(verticesX[i], verticesY[i], verticesX[j], verticesY[j],
-                       outline);
+                       outline, 4294967295U, mask);
     }
 
     // Draw lines connecting bottom and top hexagons
     if (height > 0) {
         for (int i = 0; i < 6; i++) {
             game->DrawLine(verticesX[i], verticesY[i], verticesX[i],
-                           verticesY[i] - height, outline);
+                           verticesY[i] - height, outline, 4294967295U, mask);
         }
     }
 
@@ -201,7 +201,7 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
         for (int i = 0; i < 6; i++) {
             int j = (i + 1) % 6; // Index of the next vertex with wrapping
             game->DrawLine(verticesX[i], verticesY[i] - height, verticesX[j],
-                           verticesY[j] - height, outline);
+                           verticesY[j] - height, outline, 4294967295U, mask);
         }
     }
 }
@@ -227,12 +227,13 @@ void HexGrid::Draw(std::vector<std::vector<IRender *>> &renderQueue) {
     }
 }
 
-void HexGrid::DrawUnits(std::vector<std::vector<IRender *>> &renderQueue) {
+void HexGrid::DrawUnits(std::vector<std::vector<IRender *>> &renderQueue,
+                        int *mask) {
     for (int i = 0; i < height; i++) {
         int r = i;
         for (int j = 0; j < width; j++) {
             int q = j - i / 2;
-            renderQueue[r].push_back(new RenderUnit(q, r, this, this->game));
+            renderQueue[r].push_back(new RenderUnit(q, r, this, game, mask));
         }
     }
 }

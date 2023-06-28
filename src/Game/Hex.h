@@ -140,11 +140,13 @@ class HexGrid {
     }
 
     void DrawHex(int q, int r, double sideLength, olc::Pixel color = olc::WHITE,
-                 olc::Pixel fill = olc::NONE, double height = 0);
+                 olc::Pixel fill = olc::NONE, double height = 0,
+                 int *mask = nullptr);
 
     void Draw(std::vector<std::vector<IRender *>> &renderQueue);
 
-    void DrawUnits(std::vector<std::vector<IRender *>> &renderQueue);
+    void DrawUnits(std::vector<std::vector<IRender *>> &renderQueue,
+                   int *mask = nullptr);
 
     void A_Star(std::vector<Hex> &path, Hex *start, Hex *end);
 

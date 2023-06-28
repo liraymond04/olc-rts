@@ -34,7 +34,7 @@ class Unit {
         this->color = color;
     }
 
-    void Draw(Holo::RTS *game) {
+    void Draw(Holo::RTS *game, int *mask = nullptr) {
         double centerX, centerY;
         hexGrid->CalculateHexagonCenter(pos.q, pos.r, hexGrid->_size, centerX,
                                         centerY);
@@ -43,6 +43,14 @@ class Unit {
             { (int)centerX,
               (int)(centerY - hexGrid->_heights.at(pos.q, pos.r) - size / 2) },
             size, color);
+        if (mask != nullptr) {
+            game->MaskCircleFill(
+                mask,
+                { (int)centerX,
+                  (int)(centerY - hexGrid->_heights.at(pos.q, pos.r) -
+                        size / 2) },
+                size, color);
+        }
     }
 };
 

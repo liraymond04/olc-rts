@@ -1065,14 +1065,23 @@ namespace olc
 		virtual bool Draw(int32_t x, int32_t y, Pixel p = olc::WHITE);
 		bool Draw(const olc::vi2d& pos, Pixel p = olc::WHITE);
 		// Draws a line from (x1,y1) to (x2,y2)
-		void DrawLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, Pixel p = olc::WHITE, uint32_t pattern = 0xFFFFFFFF);
-		void DrawLine(const olc::vi2d& pos1, const olc::vi2d& pos2, Pixel p = olc::WHITE, uint32_t pattern = 0xFFFFFFFF);
+		void DrawLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, Pixel p = olc::WHITE, uint32_t pattern = 0xFFFFFFFF, int *mask = nullptr);
+		void DrawLine(const olc::vi2d& pos1, const olc::vi2d& pos2, Pixel p = olc::WHITE, uint32_t pattern = 0xFFFFFFFF, int *mask = nullptr);
+		// Line mask
+		void MaskLine(int *mask, int32_t x1, int32_t y1, int32_t x2, int32_t y2, Pixel p = olc::WHITE, uint32_t pattern = 0xFFFFFFFF);
+		void MaskLine(int *mask, const olc::vi2d& pos1, const olc::vi2d& pos2, Pixel p = olc::WHITE, uint32_t pattern = 0xFFFFFFFF);
 		// Draws a circle located at (x,y) with radius
-		void DrawCircle(int32_t x, int32_t y, int32_t radius, Pixel p = olc::WHITE, uint8_t mask = 0xFF);
-		void DrawCircle(const olc::vi2d& pos, int32_t radius, Pixel p = olc::WHITE, uint8_t mask = 0xFF);
+		void DrawCircle(int32_t x, int32_t y, int32_t radius, Pixel p = olc::WHITE, uint8_t mask = 0xFF, int *_mask = nullptr);
+		void DrawCircle(const olc::vi2d& pos, int32_t radius, Pixel p = olc::WHITE, uint8_t mask = 0xFF, int *_mask = nullptr);
+		// Circle mask
+		void MaskCircle(int *_mask, int32_t x, int32_t y, int32_t radius, Pixel p = olc::WHITE, uint8_t mask = 0xFF);
+		void MaskCircle(int *_mask, const olc::vi2d& pos, int32_t radius, Pixel p = olc::WHITE, uint8_t mask = 0xFF);
 		// Fills a circle located at (x,y) with radius
-		void FillCircle(int32_t x, int32_t y, int32_t radius, Pixel p = olc::WHITE);
-		void FillCircle(const olc::vi2d& pos, int32_t radius, Pixel p = olc::WHITE);
+		void FillCircle(int32_t x, int32_t y, int32_t radius, Pixel p = olc::WHITE, int *_mask = nullptr);
+		void FillCircle(const olc::vi2d& pos, int32_t radius, Pixel p = olc::WHITE, int *_mask = nullptr);
+		// Circle full mask
+		void MaskCircleFill(int *_mask, int32_t x, int32_t y, int32_t radius, Pixel p = olc::WHITE);
+		void MaskCircleFill(int *_mask, const olc::vi2d& pos, int32_t radius, Pixel p = olc::WHITE);
 		// Draws a rectangle at (x,y) to (x+w,y+h)
 		void DrawRect(int32_t x, int32_t y, int32_t w, int32_t h, Pixel p = olc::WHITE);
 		void DrawRect(const olc::vi2d& pos, const olc::vi2d& size, Pixel p = olc::WHITE);
@@ -1083,8 +1092,8 @@ namespace olc
 		void DrawTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p = olc::WHITE);
 		void DrawTriangle(const olc::vi2d& pos1, const olc::vi2d& pos2, const olc::vi2d& pos3, Pixel p = olc::WHITE);
 		// Flat fills a triangle between points (x1,y1), (x2,y2) and (x3,y3)
-		void FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p = olc::WHITE);
-		void FillTriangle(const olc::vi2d& pos1, const olc::vi2d& pos2, const olc::vi2d& pos3, Pixel p = olc::WHITE);
+		void FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p = olc::WHITE, int *mask = nullptr);
+		void FillTriangle(const olc::vi2d& pos1, const olc::vi2d& pos2, const olc::vi2d& pos3, Pixel p = olc::WHITE, int *mask = nullptr);
 		// Fill a textured and coloured triangle
 		void FillTexturedTriangle(const std::vector<olc::vf2d>& vPoints, std::vector<olc::vf2d> vTex, std::vector<olc::Pixel> vColour, olc::Sprite* sprTex);
 		void FillTexturedPolygon(const std::vector<olc::vf2d>& vPoints, const std::vector<olc::vf2d>& vTex, const std::vector<olc::Pixel>& vColour, olc::Sprite* sprTex, olc::DecalStructure structure = olc::DecalStructure::LIST);
@@ -2176,10 +2185,10 @@ namespace olc
 	}
 
 
-	void PixelGameEngine::DrawLine(const olc::vi2d& pos1, const olc::vi2d& pos2, Pixel p, uint32_t pattern)
-	{ DrawLine(pos1.x, pos1.y, pos2.x, pos2.y, p, pattern); }
+	void PixelGameEngine::DrawLine(const olc::vi2d& pos1, const olc::vi2d& pos2, Pixel p, uint32_t pattern, int *mask)
+	{ DrawLine(pos1.x, pos1.y, pos2.x, pos2.y, p, pattern, mask); }
 
-	void PixelGameEngine::DrawLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, Pixel p, uint32_t pattern)
+	void PixelGameEngine::DrawLine(int32_t x1, int32_t y1, int32_t x2, int32_t y2, Pixel p, uint32_t pattern, int *mask)
 	{
 		int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
 		dx = x2 - x1; dy = y2 - y1;
@@ -2196,7 +2205,7 @@ namespace olc
 		if (dx == 0) // Line is vertical
 		{
 			if (y2 < y1) std::swap(y1, y2);
-			for (y = y1; y <= y2; y++) if (rol()) Draw(x1, y, p);
+			for (y = y1; y <= y2; y++) if (rol() && !(mask != nullptr && (y * vScreenSize.y + x1) < (vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x1) >= 0 && mask[y * vScreenSize.y + x1])) Draw(x1, y, p);
 			return;
 		}
 
@@ -2221,7 +2230,7 @@ namespace olc
 				x = x2; y = y2; xe = x1;
 			}
 
-			if (rol()) Draw(x, y, p);
+			if (rol() && !(mask != nullptr && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0 && mask[y * vScreenSize.y + x])) Draw(x, y, p);
 
 			for (i = 0; x < xe; i++)
 			{
@@ -2233,7 +2242,7 @@ namespace olc
 					if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) y = y + 1; else y = y - 1;
 					px = px + 2 * (dy1 - dx1);
 				}
-				if (rol()) Draw(x, y, p);
+				if (rol() && !(mask != nullptr && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0 && mask[y * vScreenSize.y + x])) Draw(x, y, p);
 			}
 		}
 		else
@@ -2247,7 +2256,7 @@ namespace olc
 				x = x2; y = y2; ye = y1;
 			}
 
-			if (rol()) Draw(x, y, p);
+			if (rol() && !(mask != nullptr && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0 && mask[y * vScreenSize.y + x])) Draw(x, y, p);
 
 			for (i = 0; y < ye; i++)
 			{
@@ -2259,15 +2268,103 @@ namespace olc
 					if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) x = x + 1; else x = x - 1;
 					py = py + 2 * (dx1 - dy1);
 				}
-				if (rol()) Draw(x, y, p);
+				if (rol() && !(mask != nullptr && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0 && mask[y * vScreenSize.y + x])) Draw(x, y, p);
 			}
 		}
 	}
 
-	void PixelGameEngine::DrawCircle(const olc::vi2d& pos, int32_t radius, Pixel p, uint8_t mask)
-	{ DrawCircle(pos.x, pos.y, radius, p, mask); }
+	void PixelGameEngine::MaskLine(int *mask, const olc::vi2d& pos1, const olc::vi2d& pos2, Pixel p, uint32_t pattern)
+	{ MaskLine(mask, pos1.x, pos1.y, pos2.x, pos2.y, p, pattern); }
 
-	void PixelGameEngine::DrawCircle(int32_t x, int32_t y, int32_t radius, Pixel p, uint8_t mask)
+	void PixelGameEngine::MaskLine(int *mask, int32_t x1, int32_t y1, int32_t x2, int32_t y2, Pixel p, uint32_t pattern)
+	{
+		int x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
+		dx = x2 - x1; dy = y2 - y1;
+
+		auto rol = [&](void) { pattern = (pattern << 1) | (pattern >> 31); return pattern & 1; };
+
+		olc::vi2d p1(x1, y1), p2(x2, y2);
+		//if (!ClipLineToScreen(p1, p2))
+		//	return;
+		x1 = p1.x; y1 = p1.y;
+		x2 = p2.x; y2 = p2.y;
+
+		// straight lines idea by gurkanctn
+		if (dx == 0) // Line is vertical
+		{
+			if (y2 < y1) std::swap(y1, y2);
+			for (y = y1; y <= y2; y++) if (rol() && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0) mask[y * vScreenSize.y + x] = 1;
+			return;
+		}
+
+		if (dy == 0) // Line is horizontal
+		{
+			if (x2 < x1) std::swap(x1, x2);
+			for (x = x1; x <= x2; x++) if (rol() && (y1 * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0) mask[y1 * vScreenSize.y + x] = 1;
+			return;
+		}
+
+		// Line is Funk-aye
+		dx1 = abs(dx); dy1 = abs(dy);
+		px = 2 * dy1 - dx1;	py = 2 * dx1 - dy1;
+		if (dy1 <= dx1)
+		{
+			if (dx >= 0)
+			{
+				x = x1; y = y1; xe = x2;
+			}
+			else
+			{
+				x = x2; y = y2; xe = x1;
+			}
+
+			if (rol() && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0) mask[y * vScreenSize.y + x] = 1;
+
+			for (i = 0; x < xe; i++)
+			{
+				x = x + 1;
+				if (px < 0)
+					px = px + 2 * dy1;
+				else
+				{
+					if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) y = y + 1; else y = y - 1;
+					px = px + 2 * (dy1 - dx1);
+				}
+				if (rol() && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0) mask[y * vScreenSize.y + x] = 1;
+			}
+		}
+		else
+		{
+			if (dy >= 0)
+			{
+				x = x1; y = y1; ye = y2;
+			}
+			else
+			{
+				x = x2; y = y2; ye = y1;
+			}
+
+			if (rol() && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0) mask[y * vScreenSize.y + x] = 1;
+
+			for (i = 0; y < ye; i++)
+			{
+				y = y + 1;
+				if (py <= 0)
+					py = py + 2 * dx1;
+				else
+				{
+					if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) x = x + 1; else x = x - 1;
+					py = py + 2 * (dx1 - dy1);
+				}
+				if (rol() && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && (y * vScreenSize.y + x) >= 0) mask[y * vScreenSize.y + x] = 1;
+			}
+		}
+	}
+
+	void PixelGameEngine::DrawCircle(const olc::vi2d& pos, int32_t radius, Pixel p, uint8_t mask, int *_mask)
+	{ DrawCircle(pos.x, pos.y, radius, p, mask, _mask); }
+
+	void PixelGameEngine::DrawCircle(int32_t x, int32_t y, int32_t radius, Pixel p, uint8_t mask, int *_mask)
 	{ // Thanks to IanM-Matrix1 #PR121
 		if (radius < 0 || x < -radius || y < -radius || x - GetDrawTargetWidth() > radius || y - GetDrawTargetHeight() > radius)
 			return;
@@ -2281,16 +2378,16 @@ namespace olc
 			while (y0 >= x0) // only formulate 1/8 of circle
 			{
 				// Draw even octants
-				if (mask & 0x01) Draw(x + x0, y - y0, p);// Q6 - upper right right
-				if (mask & 0x04) Draw(x + y0, y + x0, p);// Q4 - lower lower right
-				if (mask & 0x10) Draw(x - x0, y + y0, p);// Q2 - lower left left
-				if (mask & 0x40) Draw(x - y0, y - x0, p);// Q0 - upper upper left
+				if (mask & 0x01 && !(_mask != nullptr && ((y - y0) * vScreenSize.y + (x + x0) < vScreenSize.y * vScreenSize.x) && (y - y0) * vScreenSize.y + (x + x0) >= 0 && _mask[(y - y0) * vScreenSize.y + (x + x0)])) Draw(x + x0, y - y0, p);// Q6 - upper right right
+				if (mask & 0x04 && !(_mask != nullptr && ((y + x0) * vScreenSize.y + (x + y0) < vScreenSize.y * vScreenSize.x) && (y + x0) * vScreenSize.y + (x + y0) >= 0 && _mask[(y + x0) * vScreenSize.y + (x + y0)])) Draw(x + y0, y + x0, p);// Q4 - lower lower right
+				if (mask & 0x10 && !(_mask != nullptr && ((y + y0) * vScreenSize.y + (x - x0) < vScreenSize.y * vScreenSize.x) && (y + y0) * vScreenSize.y + (x - x0) >= 0 && _mask[(y + y0) * vScreenSize.y + (x - x0)])) Draw(x - x0, y + y0, p);// Q2 - lower left left
+				if (mask & 0x40 && !(_mask != nullptr && ((y - x0) * vScreenSize.y + (x - y0) < vScreenSize.y * vScreenSize.x) && (y - x0) * vScreenSize.y + (x - y0) >= 0 && _mask[(y - x0) * vScreenSize.y + (x - y0)])) Draw(x - y0, y - x0, p);// Q0 - upper upper left
 				if (x0 != 0 && x0 != y0)
 				{
-					if (mask & 0x02) Draw(x + y0, y - x0, p);// Q7 - upper upper right
-					if (mask & 0x08) Draw(x + x0, y + y0, p);// Q5 - lower right right
-					if (mask & 0x20) Draw(x - y0, y + x0, p);// Q3 - lower lower left
-					if (mask & 0x80) Draw(x - x0, y - y0, p);// Q1 - upper left left
+					if (mask & 0x02 && !(_mask != nullptr && ((y - x0) * vScreenSize.y + (x + y0) < vScreenSize.y * vScreenSize.x) && (y - y0) * vScreenSize.y + (x + x0) >= 0 && _mask[(y - x0) * vScreenSize.y + (x + y0)])) Draw(x + y0, y - x0, p);// Q7 - upper upper right
+					if (mask & 0x08 && !(_mask != nullptr && ((y + y0) * vScreenSize.y + (x + x0) < vScreenSize.y * vScreenSize.x) && (y + x0) * vScreenSize.y + (x + y0) >= 0 && _mask[(y + y0) * vScreenSize.y + (x + x0)])) Draw(x + x0, y + y0, p);// Q5 - lower right right
+					if (mask & 0x20 && !(_mask != nullptr && ((y + x0) * vScreenSize.y + (x - y0) < vScreenSize.y * vScreenSize.x) && (y + y0) * vScreenSize.y + (x - x0) >= 0 && _mask[(y + x0) * vScreenSize.y + (x - y0)])) Draw(x - y0, y + x0, p);// Q3 - lower lower left
+					if (mask & 0x80 && !(_mask != nullptr && ((y - y0) * vScreenSize.y + (x - x0) < vScreenSize.y * vScreenSize.x) && (y - x0) * vScreenSize.y + (x - y0) >= 0 && _mask[(y - y0) * vScreenSize.y + (x - x0)])) Draw(x - x0, y - y0, p);// Q1 - upper left left
 				}
 
 				if (d < 0)
@@ -2300,13 +2397,52 @@ namespace olc
 			}
 		}
 		else
-			Draw(x, y, p);
+			if (!(_mask != nullptr && (y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && y * vScreenSize.y + x >= 0 && _mask[y * vScreenSize.y + x])) Draw(x, y, p);
 	}
 
-	void PixelGameEngine::FillCircle(const olc::vi2d& pos, int32_t radius, Pixel p)
-	{ FillCircle(pos.x, pos.y, radius, p); }
+	void PixelGameEngine::MaskCircle(int *_mask, const olc::vi2d& pos, int32_t radius, Pixel p, uint8_t mask)
+	{ MaskCircle(_mask, pos.x, pos.y, radius, p, mask); }
 
-	void PixelGameEngine::FillCircle(int32_t x, int32_t y, int32_t radius, Pixel p)
+	void PixelGameEngine::MaskCircle(int *_mask, int32_t x, int32_t y, int32_t radius, Pixel p, uint8_t mask)
+	{ // Thanks to IanM-Matrix1 #PR121
+		if (radius < 0 || x < -radius || y < -radius || x - GetDrawTargetWidth() > radius || y - GetDrawTargetHeight() > radius)
+			return;
+
+		if (radius > 0)
+		{
+			int x0 = 0;
+			int y0 = radius;
+			int d = 3 - 2 * radius;
+
+			while (y0 >= x0) // only formulate 1/8 of circle
+			{
+				// Draw even octants
+				if (mask & 0x01 && ((y - y0) * vScreenSize.y + (x + x0) < vScreenSize.y * vScreenSize.x) && (y - y0) * vScreenSize.y + (x + x0) >= 0) _mask[(y - y0) * vScreenSize.y + (x + x0)] = 1;// Q6 - upper right right
+				if (mask & 0x04 && ((y + x0) * vScreenSize.y + (x + y0) < vScreenSize.y * vScreenSize.x) && (y + x0) * vScreenSize.y + (x + y0) >= 0) _mask[(y + x0) * vScreenSize.y + (x + y0)] = 1;// Q4 - lower lower right
+				if (mask & 0x10 && ((y + y0) * vScreenSize.y + (x - x0) < vScreenSize.y * vScreenSize.x) && (y + y0) * vScreenSize.y + (x - x0) >= 0) _mask[(y + y0) * vScreenSize.y + (x - x0)] = 1;// Q2 - lower left left
+				if (mask & 0x40 && ((y - x0) * vScreenSize.y + (x - y0) < vScreenSize.y * vScreenSize.x) && (y - x0) * vScreenSize.y + (x - y0) >= 0) _mask[(y - x0) * vScreenSize.y + (x - y0)] = 1;// Q0 - upper upper left
+				if (x0 != 0 && x0 != y0)
+				{
+					if (mask & 0x02 && ((y - x0) * vScreenSize.y + (x + y0) < vScreenSize.y * vScreenSize.x) && (y - x0) * vScreenSize.y + (x + y0) >= 0) _mask[(y - x0) * vScreenSize.y + (x + y0)] = 1;// Q7 - upper upper right
+					if (mask & 0x08 && ((y + y0) * vScreenSize.y + (x + x0) < vScreenSize.y * vScreenSize.x) && (y + y0) * vScreenSize.y + (x + x0) >= 0) _mask[(y + y0) * vScreenSize.y + (x + x0)] = 1;// Q5 - lower right right
+					if (mask & 0x20 && ((y + x0) * vScreenSize.y + (x - y0) < vScreenSize.y * vScreenSize.x) && (y + x0) * vScreenSize.y + (x - y0) >= 0) _mask[(y + x0) * vScreenSize.y + (x - y0)] = 1;// Q3 - lower lower left
+					if (mask & 0x80 && ((y - y0) * vScreenSize.y + (x - x0) < vScreenSize.y * vScreenSize.x) && (y - y0) * vScreenSize.y + (x - x0) >= 0) _mask[(y - y0) * vScreenSize.y + (x - x0)] = 1;// Q1 - upper left left
+				}
+
+				if (d < 0)
+					d += 4 * x0++ + 6;
+				else
+					d += 4 * (x0++ - y0--) + 10;
+			}
+		}
+		else
+			if ((y * vScreenSize.y + x < vScreenSize.y * vScreenSize.x) && y * vScreenSize.y + x >= 0) _mask[y * vScreenSize.y + x] = 1;
+	}
+
+	void PixelGameEngine::FillCircle(const olc::vi2d& pos, int32_t radius, Pixel p, int *_mask)
+	{ FillCircle(pos.x, pos.y, radius, p, _mask); }
+
+	void PixelGameEngine::FillCircle(int32_t x, int32_t y, int32_t radius, Pixel p, int *_mask)
 	{ // Thanks to IanM-Matrix1 #PR121
 		if (radius < 0 || x < -radius || y < -radius || x - GetDrawTargetWidth() > radius || y - GetDrawTargetHeight() > radius)
 			return;
@@ -2320,7 +2456,7 @@ namespace olc
 			auto drawline = [&](int sx, int ex, int y)
 			{
 				for (int x = sx; x <= ex; x++)
-					Draw(x, y, p);
+					if (!(_mask != nullptr && (y * vScreenSize.y + x) < (vScreenSize.y * vScreenSize.x) && y * vScreenSize.y + x >= 0 && _mask[y * vScreenSize.y + x])) Draw(x, y, p);
 			};
 
 			while (y0 >= x0)
@@ -2342,7 +2478,49 @@ namespace olc
 			}
 		}
 		else
-			Draw(x, y, p);
+			if (!(_mask != nullptr && (y * vScreenSize.y + x) < (vScreenSize.y * vScreenSize.x) && y * vScreenSize.y + x >= 0 && _mask[y * vScreenSize.y + x])) Draw(x, y, p);
+	}
+
+	void PixelGameEngine::MaskCircleFill(int *_mask, const olc::vi2d& pos, int32_t radius, Pixel p)
+	{ MaskCircleFill(_mask, pos.x, pos.y, radius, p); }
+
+	void PixelGameEngine::MaskCircleFill(int *_mask, int32_t x, int32_t y, int32_t radius, Pixel p)
+	{ // Thanks to IanM-Matrix1 #PR121
+		if (radius < 0 || x < -radius || y < -radius || x - GetDrawTargetWidth() > radius || y - GetDrawTargetHeight() > radius)
+			return;
+
+		if (radius > 0)
+		{
+			int x0 = 0;
+			int y0 = radius;
+			int d = 3 - 2 * radius;
+
+			auto drawline = [&](int sx, int ex, int y)
+			{
+				for (int x = sx; x <= ex; x++)
+					if ((y * vScreenSize.y + x) < (vScreenSize.y * vScreenSize.x) && y * vScreenSize.y + x >= 0) _mask[y * vScreenSize.y + x] = 1;
+			};
+
+			while (y0 >= x0)
+			{
+				drawline(x - y0, x + y0, y - x0);
+				if (x0 > 0)	drawline(x - y0, x + y0, y + x0);
+
+				if (d < 0)
+					d += 4 * x0++ + 6;
+				else
+				{
+					if (x0 != y0)
+					{
+						drawline(x - x0, x + x0, y - y0);
+						drawline(x - x0, x + x0, y + y0);
+					}
+					d += 4 * (x0++ - y0--) + 10;
+				}
+			}
+		}
+		else
+			if ((y * vScreenSize.y + x) < (vScreenSize.y * vScreenSize.x) && y * vScreenSize.y + x >= 0) _mask[y * vScreenSize.y + x] = 1;
 	}
 
 	void PixelGameEngine::DrawRect(const olc::vi2d& pos, const olc::vi2d& size, Pixel p)
@@ -2441,13 +2619,13 @@ namespace olc
 		DrawLine(x3, y3, x1, y1, p);
 	}
 
-	void PixelGameEngine::FillTriangle(const olc::vi2d& pos1, const olc::vi2d& pos2, const olc::vi2d& pos3, Pixel p)
-	{ FillTriangle(pos1.x, pos1.y, pos2.x, pos2.y, pos3.x, pos3.y, p); }
+	void PixelGameEngine::FillTriangle(const olc::vi2d& pos1, const olc::vi2d& pos2, const olc::vi2d& pos3, Pixel p, int *mask)
+	{ FillTriangle(pos1.x, pos1.y, pos2.x, pos2.y, pos3.x, pos3.y, p, mask); }
 
 	// https://www.avrfreaks.net/sites/default/files/triangles.c
-	void PixelGameEngine::FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p)
+	void PixelGameEngine::FillTriangle(int32_t x1, int32_t y1, int32_t x2, int32_t y2, int32_t x3, int32_t y3, Pixel p, int *mask)
 	{
-		auto drawline = [&](int sx, int ex, int ny) { for (int i = sx; i <= ex; i++) Draw(i, ny, p); };
+		auto drawline = [&](int sx, int ex, int ny) { for (int i = sx; i <= ex; i++) if (!(mask != nullptr && (ny * vScreenSize.y + i) < (vScreenSize.y * vScreenSize.x) && ny * vScreenSize.y + i >= 0 && mask[ny * vScreenSize.y + i])) Draw(i, ny, p); };
 
 		int t1x, t2x, y, minx, maxx, t1xp, t2xp;
 		bool changed1 = false;

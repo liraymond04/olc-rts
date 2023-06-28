@@ -98,11 +98,15 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         Tick();
     }
 
+    int mask_buffer[ScreenHeight() * ScreenWidth()];
+    memset(mask_buffer, 0, sizeof mask_buffer);
+
     Clear(olc::BLACK);
 
     hexGrid->translate_x = m_vWorldOffset.x;
     hexGrid->translate_y = m_vWorldOffset.y;
     hexGrid->Draw(renderQueue);
+    hexGrid->DrawUnits(renderQueue, mask_buffer);
 
     std::vector<IRender *> ui;
 
@@ -128,7 +132,7 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                       (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
                     { (int)prevX,
                       (int)prevY - hexGrid->_heights.at(prevPosX, prevPosY) },
-                    olc::YELLOW, this));
+                    olc::YELLOW, this, mask_buffer));
                 prevX = centerX;
                 prevY = centerY;
                 prevPosX = hex.q;
@@ -145,7 +149,7 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                           (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
                         { (int)prevX,
                           (int)prevY - hexGrid->_heights.at(hex.q, hex.r) },
-                        olc::CYAN, this));
+                        olc::CYAN, this, mask_buffer));
                     prevX = centerX;
                     prevY = centerY;
                 }
@@ -157,7 +161,7 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
     if (hexGrid->_weights.at(q, r) != -1) {
         height = hexGrid->_heights.at(q, r);
         ui.push_back(new RenderHex(q, r, hexGrid->_size, olc::RED, olc::NONE,
-                                   height, hexGrid));
+                                   height, hexGrid, mask_buffer));
     }
     if (GetKey(olc::Z).bPressed) {
         hexGrid->_heights.at(q, r) += 5;
@@ -190,7 +194,8 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         if (hexGrid->_weights.at(selected->q, selected->r) != -1) {
             height = hexGrid->_heights.at(selected->q, selected->r);
             ui.push_back(new RenderHex(selected->q, selected->r, hexGrid->_size,
-                                       olc::CYAN, olc::NONE, height, hexGrid));
+                                       olc::CYAN, olc::NONE, height, hexGrid,
+                                       mask_buffer));
         }
 
         Unit *selectedUnit = hexGrid->_units.at(selected->q, selected->r);
@@ -235,7 +240,7 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
                           (int)centerY - hexGrid->_heights.at(hex.q, hex.r) },
                         { (int)prevX,
                           (int)prevY - hexGrid->_heights.at(_q, _r) },
-                        olc::CYAN, this));
+                        olc::CYAN, this, mask_buffer));
                     prevX = centerX;
                     prevY = centerY;
                     _q = hex.q;
@@ -246,7 +251,8 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             if (hexGrid->_weights.at(q, r) != -1) {
                 height = hexGrid->_heights.at(q, r);
                 ui.push_back(new RenderHex(q, r, hexGrid->_size, olc::CYAN,
-                                           olc::NONE, height, hexGrid));
+                                           olc::NONE, height, hexGrid,
+                                           mask_buffer));
             }
         }
 
@@ -267,8 +273,6 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             }
         }
     }
-
-    hexGrid->DrawUnits(renderQueue);
 
     if (GetKey(olc::TAB).bPressed) {
         showSliders = !showSliders;
