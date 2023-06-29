@@ -115,9 +115,9 @@ class HexGrid {
     int width, height;
     double _size;
 
-    HexMap<int> _heights{ 0, 0, 4, 4, 10, -1 };
-    HexMap<int> _weights{ 0, 0, 4, 4, 1, -1 };
-    HexMap<Unit *> _units{ 0, 0, 4, 4, nullptr, nullptr };
+    HexMap<int> _heights;
+    HexMap<int> _weights;
+    HexMap<Unit *> _units;
 
     std::vector<Unit *> units;
 
@@ -132,7 +132,10 @@ class HexGrid {
     double translate_x = 0.0f;
     double translate_y = 0.0f;
 
-    HexGrid(Holo::RTS *game, int width, int height, double _size) {
+    HexGrid(Holo::RTS *game, int width, int height, double _size)
+        : _heights(0, 0, width - 1, height - 1, 10, -1),
+          _weights(0, 0, width - 1, height - 1, 1, -1),
+          _units(0, 0, width - 1, height - 1, nullptr, nullptr) {
         this->game = game;
         this->width = width;
         this->height = height;
