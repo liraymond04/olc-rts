@@ -12,7 +12,7 @@
 #include "RTS.h"
 
 struct Hex {
-    static vector<Hex> directions, diagonals;
+    static std::vector<Hex> directions, diagonals;
 
     int q, r, s;
     Hex(int q_, int r_) : q(q_), r(r_), s(-q_ - r_) {}

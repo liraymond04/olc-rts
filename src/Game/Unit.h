@@ -17,7 +17,7 @@ class Unit {
 
     bool moving = false;
     std::vector<Hex> path;
-    std::vector<vector<Hex>> queued;
+    std::vector<std::vector<Hex>> queued;
     int i = 0;
 
     std::string name;

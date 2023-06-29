@@ -6,7 +6,7 @@ int main() {
     if (game.Construct(512, 384, 2, 2)) {
         game.Start();
     } else {
-        wcout << L"Could not construct console" << endl;
+        std::wcout << L"Could not construct console" << std::endl;
     }
 
     return 0;

@@ -36,7 +36,7 @@ static std::vector<Hex> hex_linedraw(Hex a, Hex b) {
     FractionalHex a_nudge = FractionalHex(a.q + 1e-06, a.r + 1e-06);
     FractionalHex b_nudge = FractionalHex(b.q + 1e-06, b.r + 1e-06);
     std::vector<Hex> results = {};
-    double step = 1.0 / max(N, 1);
+    double step = 1.0 / std::max(N, 1);
     for (int i = 0; i <= N; i++) {
         results.push_back(
             hex_axial_round(hex_lerp(a_nudge, b_nudge, step * i)));

@@ -5,8 +5,6 @@
 #include <string>
 #include <algorithm>
 
-using namespace std;
-
 #include "olcPixelGameEngine.h"
 #include "extensions/olcPGEX_QuickGUI.h"
 
@@ -19,8 +17,7 @@ class HexGrid;
 // tile movement lerp based on unit speed
 // while center in tile, is unit pos
 
-// fix draw order
-// draw hexagon side faces
+// cull hexes outside of screen borders
 
 namespace Holo {
 class RTS : public olc::PixelGameEngine {
