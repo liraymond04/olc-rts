@@ -3,7 +3,7 @@
 int main() {
     Holo::RTS game;
 
-    if (game.Construct(512, 384, 2, 2)) {
+    if (game.Construct(384, 288, 3, 3)) {
         game.Start();
     } else {
         std::wcout << L"Could not construct console" << std::endl;

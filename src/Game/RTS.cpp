@@ -18,7 +18,7 @@ bool Holo::RTS::OnUserCreate() {
     guiSlider6 = new olc::QuickGUI::Slider(guiManager, { 30.0f, 110.0f },
                                            { 246.0f, 110.0f }, 0, 1, 0.5f);
 
-    hexGrid = new HexGrid(this, 5, 5, 30);
+    hexGrid = new HexGrid(this, 50, 50, 25);
     hexGrid->units.push_back(
         new Unit(hexGrid, Hex(0, 0), 14, "Unit 1", olc::BLUE));
     hexGrid->_units.at(0, 0) = hexGrid->units[0];
@@ -291,10 +291,18 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         EndPan(vMousePos);
 
     if (GetKey(olc::A).bHeld) {
-        hexGrid->_size += 25.0f * fElapsedTime;
+        // hexGrid->_size += 25.0f * fElapsedTime;
+        m_vWorldOffset.x -= 250.0f * fElapsedTime;
     }
     if (GetKey(olc::D).bHeld) {
-        hexGrid->_size -= 25.0f * fElapsedTime;
+        // hexGrid->_size -= 25.0f * fElapsedTime;
+        m_vWorldOffset.x += 250.0f * fElapsedTime;
+    }
+    if (GetKey(olc::W).bHeld) {
+        m_vWorldOffset.y -= 250.0f * fElapsedTime;
+    }
+    if (GetKey(olc::S).bHeld) {
+        m_vWorldOffset.y += 250.0f * fElapsedTime;
     }
 
     renderQueue.push_back(ui);
