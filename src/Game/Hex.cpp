@@ -162,8 +162,8 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
     CalculateIsometricHexagonVertices(centerX, centerY, sideLength, verticesX,
                                       verticesY);
 
-    // Draw lines between the vertices to form the hexagon
-    for (int i = 0; i < 6; i++) {
+    // Draw back lines between the vertices to form the hexagon
+    for (int i = 2; i < 6; i++) {
         int j = (i + 1) % 6; // Index of the next vertex with wrapping
         game->DrawLine(verticesX[i], verticesY[i], verticesX[j], verticesY[j],
                        outline, 4294967295U, mask);
@@ -204,6 +204,15 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
                            { (int)verticesX[5], (int)(verticesY[5] - 1) }, side,
                            mask);
     }
+
+    // Draw front lines connecting bottom and top hexagons
+    for (int i = 0; i < 2; i++) {
+        int j = (i + 1) % 6; // Index of the next vertex with wrapping
+        game->DrawLine(verticesX[i], verticesY[i], verticesX[j], verticesY[j],
+                       outline, 4294967295U, mask);
+    }
+    game->DrawLine(verticesX[0], verticesY[0], verticesX[5], verticesY[5],
+                   outline, 4294967295U, mask);
 
     // Draw front lines connecting bottom and top hexagons
     if (height > 0) {
@@ -251,7 +260,7 @@ void HexGrid::Draw(std::vector<std::vector<IRender *>> &renderQueue) {
         for (int j = 0; j < width; j++) {
             int q = j - i / 2;
             olc::Pixel col = olc::DARK_GREEN;
-            olc::Pixel side = olc::GREEN;
+            olc::Pixel side = olc::Pixel(139, 69, 19);
             // if (path.find(Hex(q, r)) != path.end()) {
             //     col = olc::YELLOW;
             // }
