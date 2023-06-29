@@ -159,6 +159,16 @@ void HexGrid::DrawHex(int q, int r, double sideLength, olc::Pixel outline,
 
     // Calculate the vertices of the isometric hexagon
     CalculateHexagonCenter(q, r, sideLength, centerX, centerY);
+
+    // Cull if out of screen bounds
+    double checkX = centerX, checkY = centerY;
+    ConvertToIsometric(checkX, checkY);
+    if (checkX - sideLength > game->ScreenWidth() || checkX + sideLength < 0 ||
+        checkY - height - sideLength > game->ScreenHeight() ||
+        checkY + sideLength < 0) {
+        return;
+    }
+
     CalculateIsometricHexagonVertices(centerX, centerY, sideLength, verticesX,
                                       verticesY);
 
