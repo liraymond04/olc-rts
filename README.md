@@ -1,4 +1,6 @@
-# olc-turingmachine
+# olc-rts
+
+Simple pixel-style hex based RTS game.
 
 Project using javidx9's [olcPixelGameEngine](https://github.com/OneLoneCoder/olcPixelGameEngine)
 
