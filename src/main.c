@@ -88,10 +88,8 @@ void UpdateDrawFrame(void) { // Update and Draw one frame
     Vector2 mouse_pos = GetAdjustedMousePos();
 
     double q = 0, r = 0;
-    // CalculateIsometricAxialCoordinates(hex_grid, mouse_pos.x, mouse_pos.y,
-    //                                    hex_grid->_size, &q, &r);
-
-    printf("%d %d\n", (int)mouse_pos.x, (int)mouse_pos.y);
+    CalculateIsometricAxialCoordinates(hex_grid, mouse_pos.x, mouse_pos.y,
+                                       hex_grid->_size, &q, &r);
     //----------------------------------------------------------------------------------
 
     // Draw
@@ -100,12 +98,12 @@ void UpdateDrawFrame(void) { // Update and Draw one frame
     {
         ClearBackground(BLACK);
         hex_grid_draw(hex_grid);
-        // if (q >= 0 && q < hex_grid->width && r >= 0 && hex_grid->height) {
-        //     hex_grid_draw_hex(hex_grid, q, r, hex_grid->_size, WHITE,
-        //                       (Color){ 0, 0, 0, 0 },
-        //                       hex_map_int_at(hex_grid->_heights, q, r),
-        //                       (Color){ 0, 0, 0, 0 });
-        // }
+        if (q >= 0 && q < hex_grid->width && r >= 0 && hex_grid->height) {
+            hex_grid_draw_hex(hex_grid, q, r, hex_grid->_size, RED,
+                              (Color){ 0, 0, 0, 0 },
+                              hex_map_int_at(hex_grid->_heights, q, r),
+                              (Color){ 0, 0, 0, 0 });
+        }
     }
     EndTextureMode();
 
