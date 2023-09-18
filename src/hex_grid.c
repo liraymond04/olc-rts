@@ -177,9 +177,9 @@ void hex_grid_draw(hex_grid_t *hex_grid) {
 
 void axial_round(double *q, double *r) {
     int qgrid = round(*q), rgrid = round(*r);
-    q -= qgrid, r -= rgrid; // remainder
-    int dq = round(*q + 0.5 * *r) * (*r * *r < *q * *q);
-    int dr = round(*r + 0.5 * *q) * (*r * *r >= *q * *q);
+    *q -= qgrid, *r -= rgrid; // remainder
+    int dq = round((*q) + 0.5 * (*r)) * ((*r) * (*r) < (*q) * (*q));
+    int dr = round((*r) + 0.5 * (*q)) * ((*r) * (*r) >= (*q) * (*q));
     *q = qgrid + dq;
     *r = rgrid + dr;
 }
@@ -204,23 +204,23 @@ static fractional_hex_t hex_lerp(fractional_hex_t a, fractional_hex_t b,
 
 void ConvertToIsometric(hex_grid_t *hex_grid, double *x, double *y) {
     // Scale
-    *x = (hex_grid->scale * *x);
-    *y = (hex_grid->scale * *y);
+    *x = (hex_grid->scale * (*x));
+    *y = (hex_grid->scale * (*y));
 
     // Rotation
     double angle_rad = hex_grid->rotation_deg * M_PI / 180.0;
-    double rotatedX = (*x * cos(angle_rad) - *y * sin(angle_rad));
-    double rotatedY = (*x * sin(angle_rad) + *y * cos(angle_rad));
+    double rotatedX = ((*x) * cos(angle_rad) - (*y) * sin(angle_rad));
+    double rotatedY = ((*x) * sin(angle_rad) + (*y) * cos(angle_rad));
     *x = rotatedX;
     *y = rotatedY;
 
     // Shearing
-    *x = (*x + hex_grid->shear_x * *y);
-    *y = (*y + hex_grid->shear_y * *x);
+    *x = ((*x) + hex_grid->shear_x * (*y));
+    *y = ((*y) + hex_grid->shear_y * (*x));
 
     // Squeezing
-    *x = (*x * hex_grid->squeeze_x);
-    *y = (*y * hex_grid->squeeze_y);
+    *x = ((*x) * hex_grid->squeeze_x);
+    *y = ((*y) * hex_grid->squeeze_y);
 
     // Translation
     *x -= hex_grid->translate_x;
@@ -236,23 +236,23 @@ void ConvertToCartesian(hex_grid_t *hex_grid, double *x, double *y) {
     *y += hex_grid->translate_y;
 
     // Unsqueezing
-    *x = (*x / hex_grid->squeeze_x);
-    *y = (*y / hex_grid->squeeze_y);
+    *x = ((*x) / hex_grid->squeeze_x);
+    *y = ((*y) / hex_grid->squeeze_y);
 
     // Unshearing
-    *x = (*x - hex_grid->shear_x * *y);
-    *y = (*y - hex_grid->shear_y * *x);
+    *x = ((*x) - hex_grid->shear_x * (*y));
+    *y = ((*y) - hex_grid->shear_y * (*x));
 
     // Inverse rotation
     double angle_rad = (-hex_grid->rotation_deg) * M_PI / 180.0;
-    double rotatedX = (*x * cos(angle_rad) - *y * sin(angle_rad));
-    double rotatedY = (*x * sin(angle_rad) + *y * cos(angle_rad));
+    double rotatedX = ((*x) * cos(angle_rad) - (*y) * sin(angle_rad));
+    double rotatedY = ((*x) * sin(angle_rad) + (*y) * cos(angle_rad));
     *x = rotatedX;
     *y = rotatedY;
 
     // Inverse scaling
-    *x = (*x / hex_grid->scale);
-    *y = (*y / hex_grid->scale);
+    *x = ((*x) / hex_grid->scale);
+    *y = ((*y) / hex_grid->scale);
 }
 
 // Function to calculate the vertices of a perfect hexagon in isometric space
