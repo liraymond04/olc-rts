@@ -6,6 +6,7 @@
 typedef struct {
     hex_grid_t *hex_grid;
     Vector2 mouse_pos;
+    double camera_speed;
 } rts_t;
 
 rts_t *rts_new();

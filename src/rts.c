@@ -6,6 +6,7 @@ double q, r;
 rts_t *rts_new() {
     rts_t *rts = (rts_t *)malloc(sizeof(rts_t));
     rts->hex_grid = hex_grid_new(5, 5, 25);
+    rts->camera_speed = 5.0f;
     return rts;
 }
 
@@ -16,19 +17,17 @@ void rts_free(rts_t *rts) {
 }
 
 void rts_input(rts_t *rts) {
-    double speed = 5.0f;
-
     if (IsKeyDown(KEY_W)) {
-        rts->hex_grid->translate_y -= speed;
+        rts->hex_grid->translate_y -= rts->camera_speed;
     }
     if (IsKeyDown(KEY_S)) {
-        rts->hex_grid->translate_y += speed;
+        rts->hex_grid->translate_y += rts->camera_speed;
     }
     if (IsKeyDown(KEY_A)) {
-        rts->hex_grid->translate_x -= speed;
+        rts->hex_grid->translate_x -= rts->camera_speed;
     }
     if (IsKeyDown(KEY_D)) {
-        rts->hex_grid->translate_x += speed;
+        rts->hex_grid->translate_x += rts->camera_speed;
     }
 }
 
