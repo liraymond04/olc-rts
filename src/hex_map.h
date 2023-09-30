@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* 
+/*
  * Header macro definitions
- * 
+ *
  * Macro should be added header files
  * ex) hex_grid.h
  */
@@ -43,9 +43,9 @@
     HEX_MAP_AT(T)    /* At function for int */                                 \
     HEX_MAP_SET(T)   /* Set function for int */
 
-/* 
+/*
  * Source macro implementations
- * 
+ *
  * Macro should be added to source files
  * ex) hex_grid.c
  */

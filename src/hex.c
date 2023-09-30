@@ -12,7 +12,7 @@ dir diagonals[6] = { { 2, -1 }, { 1, -2 }, { -1, -1 },
                      { -2, 1 }, { -1, 2 }, { 1, 1 } };
 
 hex_t *hex_new(int q, int r) {
-    hex_t *h = malloc(sizeof(hex_t));
+    hex_t *h = (hex_t *)malloc(sizeof(hex_t));
     h->q = q;
     h->r = r;
     h->s = -q - r;
@@ -90,13 +90,13 @@ int hex_length(hex_t *hex) {
 int hex_distance(hex_t *a, hex_t *b) {
     hex_t *tmp;
     hex_subtract_v(a, b, tmp);
-    int result = hex_length(tmp); 
+    int result = hex_length(tmp);
     free(tmp);
     return result;
 }
 
 fractional_hex_t *fractional_hex_new(double q, double r) {
-    fractional_hex_t *h = malloc(sizeof(fractional_hex_t));
+    fractional_hex_t *h = (fractional_hex_t *)malloc(sizeof(fractional_hex_t));
     h->q = q;
     h->r = r;
     h->s = -q - r;

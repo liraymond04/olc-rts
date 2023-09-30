@@ -11,7 +11,7 @@ bool color_equals(Color a, Color b) {
 }
 
 hex_grid_t *hex_grid_new(int width, int height, double _size) {
-    hex_grid_t *h = malloc(sizeof(hex_grid_t));
+    hex_grid_t *h = (hex_grid_t *)malloc(sizeof(hex_grid_t));
     h->_heights = hex_map_int_new(0, 0, width - 1, height - 1, 10, -1);
     h->_weights = hex_map_int_new(0, 0, width - 1, height - 1, 1, -1);
     h->width = width;
