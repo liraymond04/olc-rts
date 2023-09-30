@@ -1,13 +1,18 @@
 #include "raylib.h"
-#include "hex_grid.h"
+#include "rts.h"
 
 #if defined(PLATFORM_WEB)
 #include <emscripten/emscripten.h>
 #endif
 
+rts_t *rts;
+
+void Init(void);
+void UnInit(void);
+void UpdateDrawFrame(void); // Update and Draw one frame
+
 float map(float x, float in_min, float in_max, float out_min, float out_max);
 Vector2 GetAdjustedMousePos();
-void UpdateDrawFrame(void); // Update and Draw one frame
 
 const int canvasWidth = 400;
 const int canvasHeight = 225;
@@ -21,8 +26,6 @@ bool show_fps = true;
 
 RenderTexture2D renderTexture;
 Rectangle source = { 0, 0, (float)canvasWidth, (float)-canvasHeight };
-
-hex_grid_t *hex_grid;
 
 //------------------------------------------------------------------------------------
 // Program main entry point
@@ -40,7 +43,7 @@ int main(void) {
 
     // Initialization
     //--------------------------------------------------------------------------------------
-    hex_grid = hex_grid_new(5, 5, 25);
+    Init();
     //--------------------------------------------------------------------------------------
 
 #if defined(PLATFORM_WEB)
@@ -58,7 +61,7 @@ int main(void) {
     // UnloadTexture(texture);       // Texture unloading
     UnloadRenderTexture(renderTexture);
 
-    free(hex_grid);
+    UnInit();
 
     CloseWindow(); // Close window and OpenGL context
     //--------------------------------------------------------------------------------------
@@ -66,47 +69,30 @@ int main(void) {
     return 0;
 }
 
-void UpdateDrawFrame(void) { // Update and Draw one frame
+void Init(void) { rts = rts_new(); }
 
-    double speed = 5.0f;
+void UnInit(void) { rts_free(rts); }
+
+void UpdateDrawFrame(void) { // Update and Draw one frame
     // Update
     //----------------------------------------------------------------------------------
-    // TODO: Update your variables here
-    if (IsKeyDown(KEY_W)) {
-        hex_grid->translate_y -= speed;
-    }
-    if (IsKeyDown(KEY_S)) {
-        hex_grid->translate_y += speed;
-    }
-    if (IsKeyDown(KEY_A)) {
-        hex_grid->translate_x -= speed;
-    }
-    if (IsKeyDown(KEY_D)) {
-        hex_grid->translate_x += speed;
-    }
+    rts->mouse_pos = GetAdjustedMousePos();
+    rts_input(rts);
+    rts_update(rts);
 
-    Vector2 mouse_pos = GetAdjustedMousePos();
-
-    double q = 0, r = 0;
-    CalculateIsometricAxialCoordinates(hex_grid, mouse_pos.x, mouse_pos.y,
-                                       hex_grid->_size, &q, &r);
     //----------------------------------------------------------------------------------
 
-    // Draw
+    // Draw to render texture
     //----------------------------------------------------------------------------------
     BeginTextureMode(renderTexture);
     {
         ClearBackground(BLACK);
-        hex_grid_draw(hex_grid);
-        if (q >= 0 && q < hex_grid->width && r >= 0 && hex_grid->height) {
-            hex_grid_draw_hex(hex_grid, q, r, hex_grid->_size, RED,
-                              (Color){ 0, 0, 0, 0 },
-                              hex_map_int_at(hex_grid->_heights, q, r),
-                              (Color){ 0, 0, 0, 0 });
-        }
+        rts_draw(rts);
     }
     EndTextureMode();
 
+    // Draw render texture to screen
+    //----------------------------------------------------------------------------------
     BeginDrawing();
     {
         ClearBackground(BLACK);
