@@ -42,7 +42,8 @@ void rts_update(rts_t *rts) {
 
 void rts_draw(rts_t *rts) {
     hex_grid_draw(rts->hex_grid);
-    if (hex_map_int_at(rts->hex_grid->_weights, q, r) != -1) {
+    if (hex_map_int_at(rts->hex_grid->_weights, q, r) !=
+        rts->hex_grid->_weights->null_val) {
         hex_grid_draw_hex(rts->hex_grid, q, r, rts->hex_grid->_size, RED,
                           (Color){ 0, 0, 0, 0 },
                           hex_map_int_at(rts->hex_grid->_heights, q, r),
