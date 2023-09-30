@@ -4,14 +4,16 @@
 #include <math.h>
 #include <stdbool.h>
 
+HEX_MAP_IMP(int);
+
 bool color_equals(Color a, Color b) {
     return a.r == b.r && a.g == b.g && a.b == b.b && a.a == b.b;
 }
 
 hex_grid_t *hex_grid_new(int width, int height, double _size) {
     hex_grid_t *h = malloc(sizeof(hex_grid_t));
-    h->_heights = hex_map_int_init(0, 0, width - 1, height - 1, 10, -1);
-    h->_weights = hex_map_int_init(0, 0, width - 1, height - 1, 1, -1);
+    h->_heights = hex_map_int_new(0, 0, width - 1, height - 1, 10, -1);
+    h->_weights = hex_map_int_new(0, 0, width - 1, height - 1, 1, -1);
     h->width = width;
     h->height = width;
     h->_size = _size;
@@ -25,6 +27,13 @@ hex_grid_t *hex_grid_new(int width, int height, double _size) {
     h->translate_x = 0.0f;
     h->translate_y = 0.0f;
     return h;
+}
+
+void hex_grid_free(hex_grid_t *hex_grid) {
+    hex_map_int_free(hex_grid->_heights);
+    hex_map_int_free(hex_grid->_weights);
+    free(hex_grid);
+    hex_grid = NULL;
 }
 
 void hex_grid_draw_hex(hex_grid_t *hex_grid, int q, int r, double side_length,

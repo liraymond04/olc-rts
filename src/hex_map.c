@@ -1,10 +1,8 @@
 #include "hex_map.h"
 
-HEX_MAP(int)
-
-#define HEX_MAP_INIT_IMP(T)                                                    \
-    hex_map_##T##_t *hex_map_##T##_init(int left, int top, int right,          \
-                                        int bottom, T init_val, T null_val) {  \
+#define HEX_MAP_NEW_IMP(T)                                                     \
+    hex_map_##T##_t *hex_map_##T##_new(int left, int top, int right,           \
+                                       int bottom, T init_val, T null_val) {   \
         hex_map_##T##_t *hex_map =                                             \
             (hex_map_##T##_t *)malloc(sizeof(hex_map_##T##_t));                \
         if (hex_map == NULL) {                                                 \
@@ -63,7 +61,25 @@ HEX_MAP(int)
         hex_map->map[j][i] = val;                                              \
     }
 
-HEX_MAP_INIT_IMP(int)
-HEX_MAP_CLEAR_IMP(int)
-HEX_MAP_AT_IMP(int)
-HEX_MAP_SET_IMP(int)
+#define HEX_MAP_FREE_IMP(T)                                                    \
+    void hex_map_##T##_free(hex_map_##T##_t *hex_map) {                        \
+        int height = hex_map->bottom_ - hex_map->top_ + 1;                     \
+        int width = hex_map->right_ - hex_map->left_ + 1;                      \
+        for (int r = 0; r < height; r++) {                                     \
+            free(hex_map->map[r]);                                             \
+        }                                                                      \
+        free(hex_map->map);                                                    \
+        free(hex_map);                                                         \
+        hex_map = NULL;                                                        \
+    }
+
+#define HEX_MAP_IMP(T)   /* Define hex_map for int */                          \
+    HEX_MAP_NEW_IMP(T)   /* Initialize function for int */                     \
+    HEX_MAP_FREE_IMP(T)  /* Free function for int*/                            \
+    HEX_MAP_CLEAR_IMP(T) /* Clear function for int  */                         \
+    HEX_MAP_AT_IMP(T)    /* At function for int */                             \
+    HEX_MAP_SET_IMP(T)   /* Set function for int */
+
+/* Add types */
+// HEX_MAP(int)
+// HEX_MAP_IMP(int)

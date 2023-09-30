@@ -25,6 +25,8 @@ typedef struct {
 
 hex_grid_t *hex_grid_new(int width, int height, double _size);
 
+void hex_grid_free(hex_grid_t *hex_grid);
+
 void hex_grid_draw_hex(hex_grid_t *hex_grid, int q, int r, double side_length,
                        Color outline, Color fill, double height, Color side);
 void hex_grid_draw(hex_grid_t *hex_grid);
