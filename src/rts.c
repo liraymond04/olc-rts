@@ -9,7 +9,11 @@ rts_t *rts_new() {
     return rts;
 }
 
-void rts_free(rts_t *rts) { hex_grid_free(rts->hex_grid); }
+void rts_free(rts_t *rts) {
+    hex_grid_free(rts->hex_grid);
+    free(rts);
+    rts = NULL;
+}
 
 void rts_input(rts_t *rts) {
     double speed = 5.0f;

@@ -78,6 +78,17 @@
         return hex_map;                                                        \
     }
 
+#define HEX_MAP_FREE_IMP(T)                                                    \
+    void hex_map_##T##_free(hex_map_##T##_t *hex_map) {                        \
+        int height = hex_map->bottom_ - hex_map->top_ + 1;                     \
+        for (int r = 0; r < height; r++) {                                     \
+            free(hex_map->map[r]);                                             \
+        }                                                                      \
+        free(hex_map->map);                                                    \
+        free(hex_map);                                                         \
+        hex_map = NULL;                                                        \
+    }
+
 #define HEX_MAP_CLEAR_IMP(T)                                                   \
     void hex_map_##T##_clear(hex_map_##T##_t *hex_map, T val) {                \
         int height = hex_map->bottom_ - hex_map->top_ + 1;                     \
@@ -109,18 +120,6 @@
             return;                                                            \
         }                                                                      \
         hex_map->map[j][i] = val;                                              \
-    }
-
-#define HEX_MAP_FREE_IMP(T)                                                    \
-    void hex_map_##T##_free(hex_map_##T##_t *hex_map) {                        \
-        int height = hex_map->bottom_ - hex_map->top_ + 1;                     \
-        int width = hex_map->right_ - hex_map->left_ + 1;                      \
-        for (int r = 0; r < height; r++) {                                     \
-            free(hex_map->map[r]);                                             \
-        }                                                                      \
-        free(hex_map->map);                                                    \
-        free(hex_map);                                                         \
-        hex_map = NULL;                                                        \
     }
 
 #define HEX_MAP_IMP(T)   /* Define hex_map for int */                          \
