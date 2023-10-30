@@ -2,11 +2,14 @@
 #define RTS_H
 
 #include "hex_grid.h"
+#include "render.h"
 
 typedef struct {
     hex_grid_t *hex_grid;
     Vector2 mouse_pos;
     double camera_speed;
+
+    render_queue_t *rq;
 } rts_t;
 
 rts_t *rts_new();
