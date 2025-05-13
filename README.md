@@ -36,6 +36,12 @@ Generate project makefiles and build with CMake
 ./build.sh
 ```
 
+You can run the application using the built executable
+
+```bash
+./build/main
+```
+
 ### Windows
 
 Install a C++ compiler like [MinGW](https://sourceforge.net/projects/mingw/)
@@ -59,4 +65,10 @@ Build by passing in a new target flag to the build script
 ```bash
 ## Optionally pass the -d flag to build for debug
 ./build.sh -t web
+```
+
+You can run the application by opening a local web server with emrun
+
+```bash
+emrun build/main.html
 ```
