@@ -1,15 +1,38 @@
 #!/bin/bash
 
 debug_flag='-DCMAKE_BUILD_TYPE=Release'
+target="native"
 
-while getopts 'd' flag; do
-  case "${flag}" in
-    d) debug_flag='-DCMAKE_BUILD_TYPE=Debug' ;;
-    *) exit 1 ;;
+# Parse flags
+while [[ "$#" -gt 0 ]]; do
+  case "$1" in
+    -d)
+      debug_flag='-DCMAKE_BUILD_TYPE=Debug'
+      shift
+      ;;
+    -t|--target)
+      if [[ -n "$2" ]]; then
+        target="$2"
+        shift 2
+      else
+        echo "Error: --target requires an argument."
+        exit 1
+      fi
+      ;;
+    *)
+      echo "Unknown option: $1"
+      exit 1
+      ;;
   esac
 done
 
-echo $debug_flag
+echo "Build type: $debug_flag"
+echo "Target: $target"
 
-cmake $debug_flag -B build
-cmake --build build
+if [[ "$target" == "web" ]]; then
+  emcmake cmake . $debug_flag -B build-web
+  cmake --build build-web
+else
+  cmake $debug_flag -B build
+  cmake --build build
+fi

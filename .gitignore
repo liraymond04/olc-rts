@@ -1,4 +1,5 @@
 build/
+build-web/
 config.json
 
 # nvim LSP

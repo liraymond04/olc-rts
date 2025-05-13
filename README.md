@@ -46,3 +46,17 @@ Generate project makefiles and build with CMake
 # Use the -d flag to build for debugging
 ./build.sh
 ```
+
+### Web build with Emscripten
+Web builds use [Emscripten](https://github.com/emscripten-core/emscripten), and need the following additional packages:
+
+```bash
+sudo pacman -S --needed emscripten
+```
+
+Build by passing in a new target flag to the build script
+
+```bash
+## Optionally pass the -d flag to build for debug
+./build.sh -t web
+```

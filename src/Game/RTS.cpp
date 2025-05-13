@@ -98,7 +98,8 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         Tick();
     }
 
-    int mask_buffer[ScreenHeight() * ScreenWidth()];
+    int size = ScreenHeight() * ScreenWidth();
+    int *mask_buffer = (int *)malloc(sizeof(int) * size);
     memset(mask_buffer, 0, sizeof mask_buffer);
 
     Clear(olc::BLACK);
