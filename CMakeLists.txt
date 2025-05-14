@@ -6,7 +6,7 @@ cmake_minimum_required(VERSION 3.10)
 #
 #   - dictates the output executable filename
 #
-project(main)
+project(olc-rts)
 
 #
 # HAS_TERMINAL

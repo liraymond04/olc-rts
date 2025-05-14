@@ -40,7 +40,7 @@ Generate project makefiles and build with CMake
 You can run the application using the built executable
 
 ```bash
-./build/main
+./build/olc-rts
 ```
 
 ### Windows
@@ -71,5 +71,5 @@ Build by passing in a new target flag to the build script
 You can run the application by opening a local web server with emrun
 
 ```bash
-emrun build/main.html
+emrun build/olc-rts.html
 ```
