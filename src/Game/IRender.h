@@ -39,6 +39,28 @@ class RenderLine : public IRender {
     void Draw() override { game->DrawLine(pos1, pos2, p, 4294967295U, mask); }
 };
 
+class RenderString : public IRender {
+  private:
+    olc::vi2d pos;
+    std::string sText;
+    olc::Pixel col;
+    uint32_t scale;
+    Holo::RTS *game;
+
+  public:
+    RenderString(const olc::vi2d &pos, const std::string &sText,
+                 olc::Pixel col = olc::WHITE, uint32_t scale = 1,
+                 Holo::RTS *game = nullptr) {
+        this->pos = pos;
+        this->sText = sText;
+        this->col = col;
+        this->scale = scale;
+        this->game = game;
+    }
+
+    void Draw() override { game->DrawString(pos, sText, col, scale); }
+};
+
 class RenderHex : public IRender {
   private:
     int q;

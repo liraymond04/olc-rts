@@ -202,7 +202,9 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
         Unit *selectedUnit = hexGrid->_units.at(selected->q, selected->r);
         if (selectedUnit != nullptr) {
             following = selectedUnit;
-            DrawString({ 10, ScreenHeight() - 15 }, selectedUnit->name);
+            ui.push_back(new RenderString({ 10, ScreenHeight() - 15 },
+                                          selectedUnit->name, olc::WHITE, 1,
+                                          this));
             std::vector<Hex> path;
             Hex end = Hex(q, r);
             if (selectedUnit->actions.empty()) {
@@ -312,6 +314,10 @@ bool Holo::RTS::OnUserUpdate(float fElapsedTime) {
             render->Draw();
             delete render;
         }
+    }
+
+    if (GetKey(olc::ESCAPE).bPressed) {
+        return false;
     }
 
     return true;

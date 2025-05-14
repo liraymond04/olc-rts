@@ -10,6 +10,7 @@ Project using javidx9's [olcPixelGameEngine](https://github.com/OneLoneCoder/olc
 
 | Button | Action |
 | ----------- | ----------- |
+| Esc | Close game |
 | W | Move camera up |
 | A | Move camera left |
 | S | Move camera right |
